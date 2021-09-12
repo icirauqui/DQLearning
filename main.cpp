@@ -5,8 +5,15 @@
 
 
 
+
 int main(){
-    std::cout << " a" << std::endl;
+
+    agentDQL agent({1,10,10,4},0.01);
+
+
 
     return 0;
 }
+
+
+

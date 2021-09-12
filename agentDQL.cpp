@@ -3,7 +3,14 @@
 
 
 
-agentDQL::agentDQL(){
+
+
+agentDQL::agentDQL(std::vector<uint> topology, float learningRate){
+
+    pDNN1 = new DNN(topology,learningRate);
+    pDNN2 = new DNN(topology,learningRate);
+
+
 
 
 

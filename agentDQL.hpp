@@ -1,6 +1,6 @@
 #include <iostream>
 
-
+#include "DNN.cpp"
 
 
 class agentDQL{
@@ -9,19 +9,24 @@ class agentDQL{
 
         bool bDebug;
 
+        // Main NN
+        DNN *pDNN1;
+        // Target NN
+        DNN *pDNN2;
+
 
     public:
 
 
-        agentDQL();
+        agentDQL(std::vector<uint> topology, float learningRate);
 
         ~agentDQL();
 
         void debug_mode(bool bDebug = false);
 
 
-        
 
 
 
-}
+
+};
