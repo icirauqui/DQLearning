@@ -1,35 +1,9 @@
-#include "DNN.hpp"
+#include "nn1.hpp"
 
-
-
-Scalar f_activation(Scalar x){
-    if (f_act==1) //tanh
-        return tanhf(x);
-    else { // relu
-        if (x>0) return x;
-        else return 0;
-    }
-}
-
-Scalar f_activation_d(Scalar x){
-    if (f_act==1) //tanh
-        return 1 - tanhf(x) * tanhf(x);
-    else { // relu
-        if (x>0) return 1;
-        else return 0;
-    }
-}
-
-
-
-
-
-DNN::DNN(std::vector<uint> topology, Scalar learningRate){
+nn1::nn1(std::vector<uint> topology, Scalar learningRate, bool bDebug){
     this->topology = topology;
     this->learningRate = learningRate;
-    this->f_act = f_act;
-
-
+    this->bDebug = bDebug;
 
     for (uint i=0; i<topology.size(); i++){
         // Initialize neuron layers
@@ -44,6 +18,7 @@ DNN::DNN(std::vector<uint> topology, Scalar learningRate){
 
         // vector.back() gives the handle to recently added element
         // coeffRef gives the reference of value at that place
+        // (using this as we're using pointers)
         if (i != topology.size() - 1){
             neuronLayers.back()->coeffRef(topology[i]) = 1.0;
             cacheLayers.back()->coeffRef(topology[i]) = 1.0;
@@ -62,13 +37,8 @@ DNN::DNN(std::vector<uint> topology, Scalar learningRate){
                 weights.back()->setRandom();
             }
         }
+
     }
-
-
-
-
-
-
 
     if (bDebug) {
         std::cout << " neuron layers " << std::endl;
@@ -110,18 +80,23 @@ DNN::DNN(std::vector<uint> topology, Scalar learningRate){
             std::cout << std::endl;
         }
     }
+    
+
+
+    //    for (int i=0; i<in_dat.size(); i++){
+    //    std::cout << *in_dat[i] << " ";
+    //}
+    //std::cout << std::endl << std::endl << std::endl;
+
+
+
 }
 
 
-DNN::~DNN(){}
+nn1::~nn1(){}
 
 
-void DNN::debug_mode(bool bDebug){
-    this->bDebug = bDebug;
-}
-
-
-void DNN::propagateForward(RowVector& input){
+void nn1::propagateForward(RowVector& input){
     // Set the input to input layer. Block(startRow, startCol, blockRows, blockCols) returns a part of the given matrix
     neuronLayers.front()->block(0, 0, 1, neuronLayers.front()->size()-1) = input;
 
@@ -131,18 +106,18 @@ void DNN::propagateForward(RowVector& input){
 
     // Apply the activation function to all elements of CURRENT_LAYER using unaryExpr
     for (uint i = 1; i < topology.size() - 1; i++)
-        neuronLayers[i]->block(0, 0, 1, topology[i]).unaryExpr(std::ptr_fun(f_activation));
+        neuronLayers[i]->block(0, 0, 1, topology[i]).unaryExpr(std::ptr_fun(activationFunction));
 }
 
 
-void DNN::propagateBackward(RowVector& output){
+void nn1::propagateBackward(RowVector& output){
     calcErrors(output);
     updateWeights();
 }
 
 
 
-void DNN::calcErrors(RowVector& output){
+void nn1::calcErrors(RowVector& output){
     // Calculate the errors made by neurons of last layer
     (*deltas.back()) = output - (*neuronLayers.back());
 
@@ -154,7 +129,7 @@ void DNN::calcErrors(RowVector& output){
 
 
 
-void DNN::updateWeights(){
+void nn1::updateWeights(){
     // topology.size()-1 = weights.size()
     for (uint i=0; i<topology.size()-1; i++){
         // In this loop we are iterating over the different layers (from first hidden to output layer)
@@ -163,33 +138,32 @@ void DNN::updateWeights(){
         if (i != topology.size() - 2) 
             for (uint c = 0; c<weights[i]->cols() - 1; c++)
                 for (uint r = 0; r<weights[i]->rows(); r++)
-                    weights[i]->coeffRef(r,c) += learningRate * deltas[i+1]->coeffRef(c) * f_activation_d(cacheLayers[i+1]->coeffRef(c)) * neuronLayers[i]->coeffRef(r);
+                    weights[i]->coeffRef(r,c) += learningRate * deltas[i+1]->coeffRef(c) * activationFunctionDerivative(cacheLayers[i+1]->coeffRef(c)) * neuronLayers[i]->coeffRef(r);
         else
             for (uint c = 0; c<weights[i]->cols(); c++)
                 for (uint r = 0; r<weights[i]->rows(); r++)
-                    weights[i]->coeffRef(r,c) += learningRate * deltas[i+1]->coeffRef(c) * f_activation_d(cacheLayers[i+1]->coeffRef(c)) * neuronLayers[i]->coeffRef(r);
+                    weights[i]->coeffRef(r,c) += learningRate * deltas[i+1]->coeffRef(c) * activationFunctionDerivative(cacheLayers[i+1]->coeffRef(c)) * neuronLayers[i]->coeffRef(r);
     }
 }
 
 
-void DNN::update_from_main(DNN *pDNN){
-    weights = pDNN->weights;
+
+void nn1::train(std::vector<RowVector*> input_data, std::vector<RowVector*> output_data){
+    for (uint i = 0; i < input_data.size(); i++){
+        if (bDebug) std::cout << "Input-Expected-Computed-MSE\t" << *input_data[i];
+        propagateForward(*input_data[i]);
+        if (bDebug) std::cout << "\t" << *output_data[i] << "\t" << *neuronLayers.back();
+        propagateBackward(*output_data[i]);
+        if (bDebug) std::cout << "\t" << std::sqrt((*deltas.back()).dot((*deltas.back())) / deltas.back()->size()) << std::endl;
+    }
 }
 
 
+Scalar nn1::activationFunction(Scalar x){
+    return tanhf(x);
+}
 
-int DNN::train_step(RowVector* input_data){
-    propagateForward(*input_data);
-    RowVector back = *neuronLayers.back();
-
-    int max_action = 0;
-    float max_q = 0.0;
-
-    for (int i=0; i<back.size(); i++){
-        if (back(i) > max_q) 
-            max_action = i;
-    }
-
-    return max_action;
+Scalar nn1::activationFunctionDerivative(Scalar x){
+    return 1 - tanhf(x) * tanhf(x);
 }
 

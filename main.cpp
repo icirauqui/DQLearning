@@ -8,7 +8,7 @@
 
 int main(){
 
-    agentDQL agent({1,10,10,4},0.01);
+    agentDQL agent({2,10,10,4},0.5,0.5,0.5);
 
 
 

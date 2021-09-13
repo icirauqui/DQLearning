@@ -8,23 +8,16 @@ typedef Eigen::MatrixXf Matrix;
 typedef Eigen::RowVectorXf RowVector;
 typedef Eigen::VectorXf ColVector;
 
-// Activation functions and derivatives: 1(hyperbolic tangent) 2(ReLu)
-int f_act = 2;
-Scalar f_activation(Scalar x);
-Scalar f_activation_d(Scalar x);
 
-
-class DNN{
+class nn1{
 
     public:
 
         // Constructor
-        DNN(std::vector<uint> topology, Scalar learningRate = Scalar(0.005));
+        nn1(std::vector<uint> topology, Scalar learningRate = Scalar(0.005), bool bDebug = false);
         
         // Destructor
-        ~DNN();
-
-        void debug_mode(bool bDebug = false);
+        ~nn1();
 
         // Function for forward propagation of data
         void propagateForward(RowVector& input);
@@ -37,13 +30,16 @@ class DNN{
 
         // Function to update the weights of connections
         void updateWeights();
-        void update_from_main(DNN *pDNN);
 
         // Function to train the neural network give an array of datapoints
-        int train_step(RowVector* input_data);
+        void train(std::vector<RowVector*> input_data, std::vector<RowVector*> output_data);
+
+        // Function for the activation function
+        static Scalar activationFunction(Scalar x);
+        static Scalar activationFunctionDerivative(Scalar x);
 
 
-        std::string f_act;
+
 
 
 
@@ -65,8 +61,7 @@ class DNN{
         std::vector<uint> topology;
 
         // Debugging flag
-        bool bDebug = false;
-
+        bool bDebug;
 
 
 };
