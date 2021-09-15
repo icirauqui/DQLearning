@@ -19,9 +19,77 @@ environment::~environment(){}
 
 
 
+void environment::debug_mode(bool bDebug){
+    this->bDebug = bDebug;
+}
+
+
+
+std::vector<int> environment::reset(){
+    // Determines a random not terminal starting location    
+    int rowt;
+    int colt;
+            
+    do {
+        rowt = rand() % 11;
+        colt = rand() % 11;
+    }
+    while (get_reward(rowt,colt) != -1);
+
+    row = rowt;
+    col = colt;
+    
+    std::vector<int> start_location = std::vector<int>{row,col};
+    return start_location;
+}
 
 
 
 std::vector<int> environment::get_env_dims(){
     return env_dims;
 }
+
+
+int environment::get_reward(int row, int col){
+    return rewards[row][col];
+}
+
+
+
+void environment::render(){
+    std::cout << "Location = (" << row << " " << col << ") " << path_steps << std::endl;
+
+}
+
+
+
+void environment::step(std::vector<int> &observation, float &reward, bool &done, int action){
+    // Get new location based on last action
+    int row1 = row;
+    int col1 = col;
+    if (action==0 and row>0)
+        row1 -= 1;
+    else if (action==1 and col<(env_dims[1]-1))
+        col1 += 1;
+    else if (action==2 and row<(env_dims[0]-1))
+        row1 += 1;
+    else if (action==3 and col>0)
+        col1 -= 1;
+    row = row1;
+    col = col1;
+
+    observation = std::vector<int>{row,col};
+    reward = rewards[row][col];
+    done = is_terminal_state();
+}
+
+
+
+bool environment::is_terminal_state(){
+    // Determines if specified location is a terminal state
+    if (rewards[row][col]==-1)
+        return false;
+    else
+        return true;
+}
+

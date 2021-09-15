@@ -60,6 +60,7 @@
         "codecvt": "cpp",
         "list": "cpp",
         "typeindex": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "eigen": "cpp"
     }
 }

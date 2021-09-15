@@ -31,6 +31,7 @@ class DNN{
 
         // Function for backward propagation of errors made by neurons
         void propagateBackward(RowVector& output);
+        void propagateBackwardRL(RowVector& actions, RowVector& experimentals)
 
         // Function to calculate errors made by neurons in each layer
         void calcErrors(RowVector& output);
@@ -40,7 +41,8 @@ class DNN{
         void update_from_main(DNN *pDNN);
 
         // Function to train the neural network give an array of datapoints
-        int train_step(RowVector* input_data);
+        int train_step(std::vector<int> input_data);
+        RowVector memory_step(std::vector<int> input_data);
 
 
         std::string f_act;

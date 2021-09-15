@@ -140,6 +140,18 @@ void DNN::propagateBackward(RowVector& output){
     updateWeights();
 }
 
+void DNN::propagateBackwardRL(RowVector& actions, RowVector& experimentals){
+    // Calculate the errors made by neurons of last layer
+    (*deltas.back()) = actions - experimentals;
+
+    // Error calculation of hidden layers is different, we will begin by the last hidden
+    // layer and we will continue till the first hidden layer
+    for (uint i = topology.size() - 2; i>0; i--)
+        (*deltas[i]) = (*deltas[i+1]) * (weights[i]->transpose());
+
+    updateWeights();
+}
+
 
 
 void DNN::calcErrors(RowVector& output){
@@ -151,6 +163,7 @@ void DNN::calcErrors(RowVector& output){
     for (uint i = topology.size() - 2; i>0; i--)
         (*deltas[i]) = (*deltas[i+1]) * (weights[i]->transpose());
 }
+
 
 
 
@@ -178,7 +191,7 @@ void DNN::update_from_main(DNN *pDNN){
 
 
 
-int DNN::train_step(RowVector* input_data){
+int DNN::train_step(std::vector<int> input_data){
     propagateForward(*input_data);
     RowVector back = *neuronLayers.back();
 
@@ -191,5 +204,11 @@ int DNN::train_step(RowVector* input_data){
     }
 
     return max_action;
+}
+
+RowVector DNN::memory_step(std::vector<int> input_data){
+    propagateForward(*input_data);
+    RowVector back = *neuronLayers.back();
+    return back;
 }
 

@@ -28,6 +28,15 @@ class agentDQL{
         DNN *pDNN2;
 
 
+        // Memory
+        std::vector<std::vector<int> > memory_observation;
+        std::vector<std::vector<int> > memory_observation1;
+        std::vector<int> memory_action;
+        std::vector<bool> memory_done;
+
+
+
+
 
 
     public:
@@ -45,10 +54,12 @@ class agentDQL{
         void get_next_action(bool exploration = true);
         void get_next_location();
         
-        void train(int train_episodes, int update_target);
+        void train(int num_episodes, int max_steps, int target_upd, int exp_upd);
 
+        int select_action(std::vector<int> obs);
 
-
-
+        void epsilon_decay();
+   
+        void experience(int update_size);
 
 };
