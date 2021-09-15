@@ -29,8 +29,8 @@ class agentDQL{
 
 
         // Memory
-        std::vector<std::vector<int> > memory_observation;
-        std::vector<std::vector<int> > memory_observation1;
+        std::vector<RowVector*> memory_observation;
+        std::vector<RowVector*> memory_observation1;
         std::vector<int> memory_action;
         std::vector<bool> memory_done;
 
@@ -56,7 +56,9 @@ class agentDQL{
         
         void train(int num_episodes, int max_steps, int target_upd, int exp_upd);
 
-        int select_action(std::vector<int> obs);
+        int select_action(RowVector& obs);
+
+        void remember(RowVector& obs, RowVector& obs1, int act, bool bdone);
 
         void epsilon_decay();
    

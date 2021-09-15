@@ -4,6 +4,12 @@
 
 #include <eigen3/Eigen/Eigen>
 
+typedef float Scalar;
+typedef Eigen::MatrixXf Matrix;
+typedef Eigen::RowVectorXf RowVector;
+typedef Eigen::VectorXf ColVector;
+
+
 class environment{
     private:
         int row, col;
@@ -27,7 +33,7 @@ class environment{
 
         void debug_mode(bool bDebug);
 
-        std::vector<int> reset();
+        RowVector* reset();
 
         std::vector<int> get_env_dims();
 

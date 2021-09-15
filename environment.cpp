@@ -25,7 +25,7 @@ void environment::debug_mode(bool bDebug){
 
 
 
-std::vector<int> environment::reset(){
+RowVector* environment::reset(){
     // Determines a random not terminal starting location    
     int rowt;
     int colt;
@@ -38,9 +38,11 @@ std::vector<int> environment::reset(){
 
     row = rowt;
     col = colt;
+
+    RowVector* obs = new RowVector(2);
     
-    std::vector<int> start_location = std::vector<int>{row,col};
-    return start_location;
+    //std::vector<int> start_location = std::vector<int>{row,col};
+    return obs;
 }
 
 
