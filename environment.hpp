@@ -41,7 +41,7 @@ class environment{
 
         void render();
 
-        void step(std::vector<int> &observation, float &reward, bool &done, int action);
+        void step(RowVector &observation, float &reward, bool &done, int action);
 
         bool is_terminal_state();
 

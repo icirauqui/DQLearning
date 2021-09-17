@@ -40,6 +40,9 @@ RowVector* environment::reset(){
     col = colt;
 
     RowVector* obs = new RowVector(2);
+    obs->coeffRef(0) = row;
+    obs->coeffRef(1) = col;
+
     
     //std::vector<int> start_location = std::vector<int>{row,col};
     return obs;
@@ -65,7 +68,7 @@ void environment::render(){
 
 
 
-void environment::step(std::vector<int> &observation, float &reward, bool &done, int action){
+void environment::step(RowVector &observation, float &reward, bool &done, int action){
     // Get new location based on last action
     int row1 = row;
     int col1 = col;
@@ -80,7 +83,8 @@ void environment::step(std::vector<int> &observation, float &reward, bool &done,
     row = row1;
     col = col1;
 
-    observation = std::vector<int>{row,col};
+    observation.coeffRef(0) = row;
+    observation.coeffRef(1) = col;
     reward = rewards[row][col];
     done = is_terminal_state();
 }

@@ -5,14 +5,15 @@
 
 
 
-agentDQL::agentDQL(environment* pEnv, std::vector<uint> topology, float learningRate, float discount_factor, float epsilon){
-    
+agentDQL::agentDQL(std::vector<int> env_dims, std::vector<uint> topology, float learningRate, float discount_factor, float epsilon){
+
     this->pEnv = pEnv;
     this->learning_rate = learning_rate;
     this->discount_factor = discount_factor;
     this->epsilon = epsilon;
 
-    std::vector<int> env_dims = pEnv->get_env_dims();
+    pEnv = new environment(env_dims);
+
     this->topology.push_back(env_dims.size());
     for (int i=0; i<topology.size(); i++)
         this->topology.push_back(topology[i]);
@@ -29,7 +30,6 @@ agentDQL::~agentDQL(){}
 
 
 
-
 void agentDQL::debug_mode(bool bDebug){
     this->bDebug = bDebug;
 }
@@ -38,7 +38,6 @@ void agentDQL::debug_mode(bool bDebug){
 
 
 
-/*
 void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_upd){
 
     for (int episode=0; episode<num_episodes; episode++){
@@ -57,10 +56,10 @@ void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_up
 
             float reward;
             bool done;
-            pEnv->step(&observation, &reward, &done, action);
+            pEnv->step(*observation, reward, done, action);
             
             // Store result for further learning
-            remember(observation, observation1, action, done);
+            remember(*observation, *observation1, action, done);
 
             // Learn from past outcomes
             if (cnt_exp_upd == exp_upd){
@@ -85,10 +84,11 @@ void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_up
         }
     }
 }
-*/
 
 
-/*
+
+
+
 int agentDQL::select_action(RowVector& obs){
     // Calculate next action, either randomly, or with Main NN
 
@@ -96,13 +96,14 @@ int agentDQL::select_action(RowVector& obs){
     float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 
     if (r<epsilon)
-        act = pDNN1->train_step(*obs);
+        act = pDNN1->train_step(obs);
     else
         act = rand() % pDNN1->topology[0];
 
     return act;
 }
-*/
+
+
 
 
 void agentDQL::epsilon_decay(){
@@ -110,16 +111,17 @@ void agentDQL::epsilon_decay(){
         this->epsilon *= 0.999;
 }
 
-/*
+
 void agentDQL::remember(RowVector& obs, RowVector& obs1, int act, bool bdone){
-    memory_observation.push_back(*obs);
-    memory_observation1.push_back(*obs1);
+    memory_observation.push_back(&obs);
+    memory_observation1.push_back(&obs1);
     memory_action.push_back(act);
     memory_done.push_back(bdone);
 }
-*/
 
-/*
+
+
+
 void agentDQL::experience(int update_size){
 
     for (int i=0; i<update_size; i++){
@@ -154,4 +156,3 @@ void agentDQL::experience(int update_size){
     // Epsilon decays as learning advances
     epsilon_decay();
 }
-*/

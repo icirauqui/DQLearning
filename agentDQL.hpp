@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "environment.hpp"
+#include "environment.cpp"
 #include "DNN.cpp"
 
 
@@ -42,12 +42,11 @@ class agentDQL{
     public:
 
 
-        agentDQL(environment* pEnv, std::vector<uint> topology, float learningRate, float discount_factor, float epsilon);
+        agentDQL(std::vector<int> env_dims, std::vector<uint> topology, float learningRate, float discount_factor, float epsilon);
 
         ~agentDQL();
 
         void debug_mode(bool bDebug = false);
-
 
         bool is_terminal_state();
         void get_starting_location();
