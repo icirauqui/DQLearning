@@ -12,7 +12,7 @@ class agentDQL{
         int row, row1, col, col1;
         int action, action1;
 
-        std::vector<uint> topology;
+        std::vector<int> topology;
 
         float learning_rate = 0.9;
         float discount_factor = 0.9;
@@ -42,7 +42,7 @@ class agentDQL{
     public:
 
 
-        agentDQL(std::vector<int> env_dims, std::vector<uint> topology, float learningRate, float discount_factor, float epsilon);
+        agentDQL(std::vector<int> env_dims, std::vector<int> topology1, float learningRate, float discount_factor, float epsilon);
 
         ~agentDQL();
 

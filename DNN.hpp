@@ -19,7 +19,7 @@ class DNN{
     public:
 
         // Constructor
-        DNN(std::vector<uint> topology, Scalar learningRate = Scalar(0.005));
+        DNN(std::vector<int> topology, Scalar learningRate = Scalar(0.005), bool bDebug = false);
         
         // Destructor
         ~DNN();
@@ -64,7 +64,7 @@ class DNN{
 
 
         // Topology describes how many neurons we have in each layer, its size is the number of layers.
-        std::vector<uint> topology;
+        std::vector<int> topology;
 
         // Debugging flag
         bool bDebug = false;

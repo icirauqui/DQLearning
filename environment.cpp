@@ -43,6 +43,7 @@ RowVector* environment::reset(){
     obs->coeffRef(0) = row;
     obs->coeffRef(1) = col;
 
+    path_steps = 0;
     
     //std::vector<int> start_location = std::vector<int>{row,col};
     return obs;
@@ -62,7 +63,7 @@ int environment::get_reward(int row, int col){
 
 
 void environment::render(){
-    std::cout << "Location = (" << row << " " << col << ") " << path_steps << std::endl;
+    std::cout << "Location = (" << row << " " << col << ") " << path_steps + 1 << std::endl;
 
 }
 
@@ -82,6 +83,8 @@ void environment::step(RowVector &observation, float &reward, bool &done, int ac
         col1 -= 1;
     row = row1;
     col = col1;
+
+    path_steps += 1;
 
     observation.coeffRef(0) = row;
     observation.coeffRef(1) = col;

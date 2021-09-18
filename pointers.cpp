@@ -5,6 +5,8 @@ using namespace std;
 
 vector<vector<int>* > vpv;
 
+
+
 int main(){
 
     // Pointer: varible that holds the meory address of another variable
@@ -17,6 +19,12 @@ int main(){
     int n = 5;
     int *pn = &n;
     int &rn = n;
+
+    int *pn2 = pn;
+
+    cout << pn << " " << pn2 << " " << *pn << " " << *pn2 << endl;
+    *pn = 3;    
+    cout << pn << " " << pn2 << " " << *pn << " " << *pn2 << endl;
 
     cout << "n = " << n << "    &n = " << &n << "    rn = " << rn << "    pn = " << pn << "    *pn = " << *pn << endl;
 

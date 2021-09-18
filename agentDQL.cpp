@@ -5,21 +5,19 @@
 
 
 
-agentDQL::agentDQL(std::vector<int> env_dims, std::vector<uint> topology, float learningRate, float discount_factor, float epsilon){
-
-    this->pEnv = pEnv;
+agentDQL::agentDQL(std::vector<int> env_dims, std::vector<int> topology1, float learningRate, float discount_factor, float epsilon){
     this->learning_rate = learning_rate;
     this->discount_factor = discount_factor;
     this->epsilon = epsilon;
 
     pEnv = new environment(env_dims);
 
-    this->topology.push_back(env_dims.size());
-    for (int i=0; i<topology.size(); i++)
-        this->topology.push_back(topology[i]);
+    topology.push_back(env_dims.size());
+    for (unsigned int i=0; i<topology1.size(); i++)
+        topology.push_back(topology1[i]);
 
-    pDNN1 = new DNN(this->topology,learningRate);
-    pDNN2 = new DNN(this->topology,learningRate);
+    pDNN1 = new DNN(topology,learningRate,false);
+    pDNN2 = new DNN(topology,learningRate,false);
 
     // Ready randon number generator
     srand(time(0));
@@ -43,10 +41,10 @@ void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_up
     for (int episode=0; episode<num_episodes; episode++){
 
         RowVector* observation = pEnv->reset();
-        RowVector* observation1 = pEnv->reset();
+        RowVector* observation1 = new RowVector(2);
 
         for (int step = 0, cnt_target_upd = 0, cnt_exp_upd = 0; step < max_steps; step++, cnt_target_upd++, cnt_exp_upd++){
-
+            
             pEnv->render();
 
             this->action = this->select_action(*observation);
@@ -62,7 +60,8 @@ void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_up
             remember(*observation, *observation1, action, done);
 
             // Learn from past outcomes
-            if (cnt_exp_upd == exp_upd){
+            if (cnt_exp_upd == exp_upd and 5*exp_upd > memory_done.size()){
+                std::cout << "exp_upd " << 5*exp_upd << " " << memory_done.size() << std::endl;
                 this->experience(5*exp_upd);
                 cnt_exp_upd = 0;
             }
@@ -77,7 +76,8 @@ void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_up
 
             if (done){
                 // If we have reached a terminal location, end this episode
-                std::cout << "Episode " << episode << " has ended after " << step << std::endl;
+                pEnv->render();
+                std::cout << "Episode " << episode << " has ended after " << step + 1 << std::endl;
                 // print(model.layers[0].lr)
                 break;
             }
@@ -91,7 +91,6 @@ void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_up
 
 int agentDQL::select_action(RowVector& obs){
     // Calculate next action, either randomly, or with Main NN
-
     int act = 0;
     float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 
@@ -123,7 +122,6 @@ void agentDQL::remember(RowVector& obs, RowVector& obs1, int act, bool bdone){
 
 
 void agentDQL::experience(int update_size){
-
     for (int i=0; i<update_size; i++){
         int idx = rand() % memory_done.size();
 
@@ -135,7 +133,6 @@ void agentDQL::experience(int update_size){
         RowVector action_values = pDNN1->memory_step(*prev_obs);
         RowVector next_action_values = pDNN1->memory_step(*new_obs);
         RowVector experimental_values = action_values;
-
 
         float max_next_action_values = 0.0;
         for (int i=0; i<next_action_values.size(); i++){
