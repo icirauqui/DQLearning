@@ -2,7 +2,7 @@
 
 
 
-Scalar f_activation(Scalar x){
+float f_activation(float x){
     if (f_act==1) //tanh
         return tanhf(x);
     else { // relu
@@ -11,7 +11,7 @@ Scalar f_activation(Scalar x){
     }
 }
 
-Scalar f_activation_d(Scalar x){
+float f_activation_d(float x){
     if (f_act==1) //tanh
         return 1 - tanhf(x) * tanhf(x);
     else { // relu
@@ -23,23 +23,22 @@ Scalar f_activation_d(Scalar x){
 
 
 
-DNN::DNN(std::vector<int> topology, Scalar learningRate, bool bDebug){
+DNN::DNN(std::vector<int> topology, float learningRate, bool bDebug){
     this->topology = topology;
     this->learningRate = learningRate;
     this->bDebug = bDebug;
 
 
-
     for (uint i=0; i<topology.size(); i++){
         // Initialize neuron layers
         if (i == topology.size()-1){
-            neuronLayers.push_back(new RowVector(topology[i]));
+            neuronLayers.push_back(new Eigen::RowVectorXf(topology[i]));
             for (int j=0; j<neuronLayers.back()->size(); j++){
                 neuronLayers.back()->coeffRef(j) = 0.0;
             }
         }
         else{
-            neuronLayers.push_back(new RowVector(topology[i]+1));
+            neuronLayers.push_back(new Eigen::RowVectorXf(topology[i]+1));
             for (int j=0; j<neuronLayers.back()->size(); j++){
                 neuronLayers.back()->coeffRef(j) = 0.0;
             }
@@ -49,28 +48,24 @@ DNN::DNN(std::vector<int> topology, Scalar learningRate, bool bDebug){
 
     // Initialize cache and delta vectors
     for (int i=0; i<neuronLayers.size(); i++){
-        cacheLayers.push_back(new RowVector(i+1));
-        deltas.push_back(new RowVector(i+1));
+        cacheLayers.push_back(new Eigen::RowVectorXf(i+1));
+        deltas.push_back(new Eigen::RowVectorXf(i+1));
 
     }
 
     // Initialize weights matrix
     for (int i=1; i<topology.size(); i++){
         if (i!=topology.size()-1){
-            weights.push_back(new Matrix(topology[i-1] + 1, topology[i]+1));
+            weights.push_back(new Eigen::MatrixXf(topology[i-1] + 1, topology[i]+1));
             weights.back()->setRandom();
             weights.back()->col(topology[i]).setZero();
             weights.back()->coeffRef(topology[i-1],topology[i]) = 1.0;
         }
         else{
-            weights.push_back(new Matrix(topology[i-1]+1,topology[i]));
+            weights.push_back(new Eigen::MatrixXf(topology[i-1]+1,topology[i]));
             weights.back()->setRandom();
         }
     }
-
-
-
-
 
     if (bDebug) {
         std::cout << "DNN Topology = " << topology.size() << " ( ";
@@ -127,24 +122,37 @@ void DNN::debug_mode(bool bDebug){
 
 
 
-void DNN::propagateForward(RowVector& input){
+void DNN::forward(Eigen::RowVectorXf& input){
     // Set the input to input layer. Block(startRow, startCol, blockRows, blockCols) returns a part of the given matrix
     neuronLayers.front()->block(0, 0, 1, neuronLayers.front()->size()-1) = input;
 
     // Propagate the data forward
-    for (uint i=1; i<topology.size(); i++)
+    for (uint i=1; i<topology.size(); i++) {
         (*neuronLayers[i]) = (*neuronLayers[i - 1]) * (*weights[i - 1]);
+        if (i<topology.size()-1)
+            neuronLayers[i]->block(0, 0, 1, topology[i]).unaryExpr(std::ptr_fun(f_activation));
+    }
+}
 
-    // Apply the activation function to all elements of CURRENT_LAYER using unaryExpr
-    for (uint i = 1; i < topology.size() - 1; i++)
-        neuronLayers[i]->block(0, 0, 1, topology[i]).unaryExpr(std::ptr_fun(f_activation));
+void DNN::forward(Eigen::RowVectorXf& input, Eigen::RowVectorXf& output){
+    // Set the input to input layer. Block(startRow, startCol, blockRows, blockCols) returns a part of the given matrix
+    neuronLayers.front()->block(0, 0, 1, neuronLayers.front()->size()-1) = input;
+
+    // Propagate the data forward
+    for (uint i=1; i<topology.size(); i++) {
+        (*neuronLayers[i]) = (*neuronLayers[i - 1]) * (*weights[i - 1]);
+        if (i<topology.size()-1)
+            neuronLayers[i]->block(0, 0, 1, topology[i]).unaryExpr(std::ptr_fun(f_activation));
+    }
+    
+    output = *neuronLayers.back();
 }
 
 
 
 
 
-void DNN::propagateBackward(RowVector& output){
+void DNN::backward(Eigen::RowVectorXf& output){
     calcErrors(output);
     updateWeights();
 }
@@ -154,7 +162,7 @@ void DNN::propagateBackward(RowVector& output){
 
 
 
-void DNN::propagateBackwardRL(RowVector& actions, RowVector& experimentals){
+void DNN::backward(Eigen::RowVectorXf& actions, Eigen::RowVectorXf& experimentals){
     // Calculate the errors made by neurons of last layer
     (*deltas.back()) = actions - experimentals;
 
@@ -169,7 +177,7 @@ void DNN::propagateBackwardRL(RowVector& actions, RowVector& experimentals){
 
 
 
-void DNN::calcErrors(RowVector& output){
+void DNN::calcErrors(Eigen::RowVectorXf& output){
     // Calculate the errors made by neurons of last layer
     (*deltas.back()) = output - (*neuronLayers.back());
 
@@ -214,32 +222,5 @@ void DNN::update_from_main(DNN *pDNN){
 
 
 
-int DNN::train_step(RowVector& input_data){
-    propagateForward(input_data);
-    RowVector back = *neuronLayers.back();
-
-    int max_action = 0;
-    float max_q = 0.0;
-
-    for (int i=0; i<back.size(); i++){
-        if (back(i) > max_q) {
-            max_q = back(i);
-            max_action = i;
-        }
-    }
-
-    return max_action;
-}
-
-
-
-
-
-RowVector DNN::memory_step(RowVector& input_data){
-    propagateForward(input_data);
-    RowVector back = *neuronLayers.back();
-    std::cout << "memory_step " << *neuronLayers.back() << std::endl;
-    return back;
-}
 
 

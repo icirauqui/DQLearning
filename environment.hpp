@@ -1,3 +1,7 @@
+#ifndef ENVIRONMENT_HPP
+#define ENVIRONMENT_HPP
+
+
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -46,3 +50,6 @@ class environment{
         bool is_terminal_state();
 
 };
+
+
+#endif

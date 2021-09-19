@@ -1,7 +1,13 @@
+#ifndef AGENTDQL_HPP
+#define AGENTDQL_HPP
+
+
+
 #include <iostream>
 
 #include "environment.cpp"
 #include "DNN.cpp"
+#include "memory_buffer.cpp"
 
 
 
@@ -10,7 +16,6 @@ class agentDQL{
     private:
 
         int row, row1, col, col1;
-        int action, action1;
 
         std::vector<int> topology;
 
@@ -26,18 +31,8 @@ class agentDQL{
         DNN *pDNN1;
         // Target NN
         DNN *pDNN2;
-
-
         // Memory
-        std::vector<RowVector*> memory_observation;
-        std::vector<RowVector*> memory_observation1;
-        std::vector<int> memory_action;
-        std::vector<bool> memory_done;
-
-
-
-
-
+        memory_buffer *pMemory;
 
     public:
 
@@ -55,12 +50,13 @@ class agentDQL{
         
         void train(int num_episodes, int max_steps, int target_upd, int exp_upd);
 
-        int select_action(RowVector& obs);
-
-        void remember(RowVector& obs, RowVector& obs1, int act, bool bdone);
+        int select_epsilon_greedy_action(RowVector& obs);
 
         void epsilon_decay();
    
-        void experience(int update_size);
+        void experience_replay(int update_size);
 
 };
+
+
+#endif

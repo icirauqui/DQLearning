@@ -11,6 +11,7 @@ agentDQL::agentDQL(std::vector<int> env_dims, std::vector<int> topology1, float 
     this->epsilon = epsilon;
 
     pEnv = new environment(env_dims);
+    pMemory = new memory_buffer();
 
     topology.push_back(env_dims.size());
     for (unsigned int i=0; i<topology1.size(); i++)
@@ -38,47 +39,49 @@ void agentDQL::debug_mode(bool bDebug){
 
 void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_upd){
 
-    for (int episode=0; episode<num_episodes; episode++){
+    RowVector* observation = new RowVector(2);
+    RowVector* observation1 = new RowVector(2);
+    int action;
+    float reward;
+    bool done;
+    
+    std::vector<float> last_100_ep_rewards;
 
-        RowVector* observation = pEnv->reset();
-        RowVector* observation1 = new RowVector(2);
+    for (int episode=0, cnt_target_upd = 0, cnt_exp_upd = 0; episode<num_episodes; episode++){
+        
+        observation = pEnv->reset();
 
-        for (int step = 0, cnt_target_upd = 0, cnt_exp_upd = 0; step < max_steps; step++, cnt_target_upd++, cnt_exp_upd++){
+        for (int step = 0; step < max_steps; step++, cnt_target_upd++, cnt_exp_upd++){
             
             pEnv->render();
 
-            this->action = this->select_action(*observation);
+            int action = this->select_epsilon_greedy_action(*observation);
 
-            for (int i=0; i<observation->size(); i++)
-                observation1->coeffRef(i) = observation->coeffRef(i);
+            *observation1 = *observation;
 
-            float reward;
-            bool done;
             pEnv->step(*observation, reward, done, action);
             
-            // Store result for further learning
-            remember(*observation, *observation1, action, done);
+            pMemory->add(*observation, *observation1, action, done);
 
             // Learn from past outcomes
-            if (cnt_exp_upd == exp_upd and 5*exp_upd > memory_done.size()){
-                std::cout << "exp_upd " << 5*exp_upd << " " << memory_done.size() << std::endl;
-                this->experience(5*exp_upd);
+            if (cnt_exp_upd == exp_upd){
+                std::cout << "exp_upd" << std::endl;
+                if(5*exp_upd < pMemory->size())
+                    this->experience_replay(5*exp_upd);
                 cnt_exp_upd = 0;
             }
 
+            // Update target NN weights
             if (cnt_target_upd == target_upd){
-                // Every n steps, compy weights from Main NN to Target NN
+                std::cout << "target_upd " << std::endl;
                 pDNN2->update_from_main(pDNN1);
                 cnt_target_upd = 0;
             }
 
-
-
+            // End episode if we have reached a terminal state
             if (done){
-                // If we have reached a terminal location, end this episode
                 pEnv->render();
                 std::cout << "Episode " << episode << " has ended after " << step + 1 << std::endl;
-                // print(model.layers[0].lr)
                 break;
             }
         }
@@ -89,17 +92,26 @@ void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_up
 
 
 
-int agentDQL::select_action(RowVector& obs){
+int agentDQL::select_epsilon_greedy_action(RowVector& obs){
     // Calculate next action, either randomly, or with Main NN
-    int act = 0;
     float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 
-    if (r<epsilon)
-        act = pDNN1->train_step(obs);
-    else
-        act = rand() % pDNN1->topology[0];
-
-    return act;
+    if (r>epsilon){
+        return rand() % topology.back();
+    }
+    else {
+        RowVector output;
+        pDNN1->forward(obs,output);
+        float max_q = 0.0;
+        int act = 0;
+        for (int i=0; i<output.size(); i++){
+            if (output[i]>max_q){
+                max_q = output[i];
+                act = i;
+            }
+        }
+        return act;
+    }
 }
 
 
@@ -111,28 +123,31 @@ void agentDQL::epsilon_decay(){
 }
 
 
-void agentDQL::remember(RowVector& obs, RowVector& obs1, int act, bool bdone){
-    memory_observation.push_back(&obs);
-    memory_observation1.push_back(&obs1);
-    memory_action.push_back(act);
-    memory_done.push_back(bdone);
-}
 
-
-
-
-void agentDQL::experience(int update_size){
+void agentDQL::experience_replay(int update_size){
+    int memory_size = pMemory->size();
     for (int i=0; i<update_size; i++){
-        int idx = rand() % memory_done.size();
+        int idx = rand() % memory_size;
 
-        RowVector* new_obs = memory_observation[idx];
-        RowVector* prev_obs = memory_observation1[idx];
-        int action_selected = memory_action[idx];
-        bool done = memory_done[idx];
+        RowVector* new_obs = pMemory->sample_observation(idx);
+        RowVector* prev_obs = pMemory->sample_observation1(idx);
+        int action_selected = pMemory->sample_action(idx);
+        bool done = pMemory->sample_done(idx);
 
-        RowVector action_values = pDNN1->memory_step(*prev_obs);
-        RowVector next_action_values = pDNN1->memory_step(*new_obs);
-        RowVector experimental_values = action_values;
+        //std::cout << "new_obs ";
+        //for (int it1=0; it1<new_obs->size(); it1++)
+        //    std::cout << new_obs->coeffRef(it1) << " ";
+        //std::cout << std::endl;
+
+        //std::cout << "prev_obs ";
+        //for (int it1=0; it1<prev_obs->size(); it1++)
+        //    std::cout << prev_obs->coeffRef(it1) << " ";
+        //std::cout << std::endl;
+
+        RowVector action_values(4), next_action_values(4), experimental_values(4);
+        pDNN1->forward(*prev_obs,action_values);
+        pDNN1->forward(*new_obs,next_action_values);
+        experimental_values = action_values;
 
         float max_next_action_values = 0.0;
         for (int i=0; i<next_action_values.size(); i++){
@@ -147,7 +162,7 @@ void agentDQL::experience(int update_size){
             experimental_values[action_selected] = 1 + discount_factor*max_next_action_values;
         }
 
-        pDNN1->propagateBackwardRL(action_values, experimental_values);
+        pDNN1->backward(action_values, experimental_values);
     }
 
     // Epsilon decays as learning advances
