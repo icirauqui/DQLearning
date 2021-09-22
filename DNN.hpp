@@ -35,7 +35,7 @@ class DNN{
 
         // Update the weights of connections
         void updateWeights();
-        void update_from_main(DNN *pDNN);
+        void set_weights(DNN *pDNN);
 
 
         /*

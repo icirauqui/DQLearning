@@ -39,9 +39,22 @@ RowVector* environment::reset(){
     row = rowt;
     col = colt;
 
-    RowVector* obs = new RowVector(2);
-    obs->coeffRef(0) = row;
-    obs->coeffRef(1) = col;
+    RowVector* obs = new RowVector(8);
+    if (is_terminal_state()){
+        for (int i=0; i<obs->size(); i++){
+            obs->coeffRef(i) = -100;
+        }
+    }
+    else{
+        obs->coeffRef(0) = rewards[row-1][col-1];
+        obs->coeffRef(1) = rewards[row-1][col];
+        obs->coeffRef(2) = rewards[row-1][col+1];
+        obs->coeffRef(3) = rewards[row][col-1];
+        obs->coeffRef(4) = rewards[row][col+1];
+        obs->coeffRef(5) = rewards[row+1][col-1];
+        obs->coeffRef(6) = rewards[row+1][col];
+        obs->coeffRef(7) = rewards[row+1][col+1];
+    }
 
     path_steps = 0;
     
@@ -86,8 +99,28 @@ void environment::step(RowVector &observation, float &reward, bool &done, int ac
 
     path_steps += 1;
 
-    observation.coeffRef(0) = row;
-    observation.coeffRef(1) = col;
+    //observation.coeffRef(0) = row;
+    //observation.coeffRef(1) = col;
+
+    if (is_terminal_state()){
+        for (int i=0; i<observation.size(); i++){
+            observation.coeffRef(i) = -100;
+        }
+    }
+    else{
+        observation.coeffRef(0) = rewards[row-1][col-1];
+        observation.coeffRef(1) = rewards[row-1][col];
+        observation.coeffRef(2) = rewards[row-1][col+1];
+        observation.coeffRef(3) = rewards[row][col-1];
+        observation.coeffRef(4) = rewards[row][col+1];
+        observation.coeffRef(5) = rewards[row+1][col-1];
+        observation.coeffRef(6) = rewards[row+1][col];
+        observation.coeffRef(7) = rewards[row+1][col+1];
+    }
+
+
+
+
     reward = rewards[row][col];
     done = is_terminal_state();
 }

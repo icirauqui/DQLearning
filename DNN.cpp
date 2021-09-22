@@ -215,7 +215,7 @@ void DNN::updateWeights(){
 }
 
 
-void DNN::update_from_main(DNN *pDNN){
+void DNN::set_weights(DNN *pDNN){
     weights = pDNN->weights;
 }
 

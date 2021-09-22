@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-#include "environment.cpp"
+#include "environments/env_warehouse.cpp"
 #include "DNN.cpp"
 #include "memory_buffer.cpp"
 
@@ -22,6 +22,7 @@ class agentDQL{
         float learning_rate = 0.9;
         float discount_factor = 0.9;
         float epsilon = 0.9;
+        float epsilon1 = 0.0;
 
         bool bDebug;
 
@@ -37,7 +38,7 @@ class agentDQL{
     public:
 
 
-        agentDQL(std::vector<int> env_dims, std::vector<int> topology1, float learningRate, float discount_factor, float epsilon);
+        agentDQL(std::vector<int> topology1, float learningRate, float discount_factor, float epsilon);
 
         ~agentDQL();
 
@@ -55,6 +56,9 @@ class agentDQL{
         void epsilon_decay();
    
         void experience_replay(int update_size);
+
+        void backup_epsilon();
+        void restore_epsilon();
 
 };
 

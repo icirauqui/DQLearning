@@ -1,19 +1,12 @@
 #include <iostream>
 
-
 #include "agentDQL.cpp"
-
-
-
 
 int main(){
 
-    agentDQL* pAgent = new agentDQL({2,50,50,4},0.5,0.5,1.0);
-
-    int episodes = 100;
-
-    pAgent->train(episodes,1000,100,10);
-
+    //agentDQL* pAgent = new agentDQL({2,50,50,4},0.5,0.5,1.0);
+    //int episodes = 100;
+    //pAgent->train(episodes,1000,100,10);
 
     //pAgent->backup_epsilon();
     //pAgent->debug_mode(true);
@@ -21,14 +14,5 @@ int main(){
     //pAgent->debug_mode(false);
     //pAgent->restore_epsilon();
 
-
-    
- 
-    
- 
     return 0;
-    
 }
-
-
-
