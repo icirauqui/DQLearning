@@ -40,3 +40,5 @@ main
 !*.*
 # Unignore all dirs
 !*/
+# Unignore Makefile
+!Makefile
