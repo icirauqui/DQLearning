@@ -1,6 +1,6 @@
 #include "env_warehouse.hpp"
 
-environment::environment(){
+env_warehouse::env_warehouse(){
 
     this->env_dims = {11,11};
 
@@ -28,17 +28,17 @@ environment::environment(){
 }
 
 
-environment::~environment(){}
+env_warehouse::~env_warehouse(){}
 
 
 
-void environment::debug_mode(bool bDebug){
+void env_warehouse::debug_mode(bool bDebug){
     this->bDebug = bDebug;
 }
 
 
 
-RowVector* environment::reset(){
+RowVector* env_warehouse::reset(){
     // Determines a random not terminal starting location    
     int rowt;
     int colt;
@@ -64,25 +64,25 @@ RowVector* environment::reset(){
 
 
 
-std::vector<int> environment::get_env_dims(){
+std::vector<int> env_warehouse::get_env_dims(){
     return env_dims;
 }
 
 
-int environment::get_reward(int row, int col){
+int env_warehouse::get_reward(int row, int col){
     return rewards[row][col];
 }
 
 
 
-void environment::render(){
+void env_warehouse::render(){
     std::cout << "Location = (" << row << " " << col << ") " << path_steps + 1 << std::endl;
 
 }
 
 
 
-void environment::step(RowVector &observation, float &reward, bool &done, int action){
+void env_warehouse::step(int action, RowVector &observation, float &reward, bool &done){
     // Get new location based on last action
     int row1 = row;
     int col1 = col;
@@ -107,7 +107,7 @@ void environment::step(RowVector &observation, float &reward, bool &done, int ac
 
 
 
-bool environment::is_terminal_state(){
+bool env_warehouse::is_terminal_state(){
     // Determines if specified location is a terminal state
     if (rewards[row][col]==-1)
         return false;

@@ -8,6 +8,8 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+#include <eigen3/Eigen/Eigen>
+
 #define PI 3.14159265358979323846
 
 
@@ -78,7 +80,7 @@ class env_cart_pole{
         float xdot = 0.0; // speed
         float theta = 0.0; // angle
         float thetadot = 0.0; // angular velocity
-        std::vector<float> state = {x,xdot,theta,thetadot};
+        Eigen::RowVectorXf state = Eigen::RowVectorXf(4);
 
         std::vector<int> action_space = {0,1};
 
@@ -101,9 +103,10 @@ class env_cart_pole{
 
         void debug_mode(bool dbg);
 
-        void step(int action, std::vector<float> &zstate, float &zreward, bool &zdone);
+        void step(int action, Eigen::RowVectorXf &zstate, float &zreward, bool &zdone);
 
-        std::vector<float> reset();
+        //std::vector<float> reset();
+        Eigen::RowVectorXf* reset();
 
         void render(int framerate = 33);
 

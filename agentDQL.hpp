@@ -5,10 +5,15 @@
 
 #include <iostream>
 
-#include "environments/env_warehouse.cpp"
+//#include "environments/env_warehouse.cpp"
+#include "environments/env_cart_pole.cpp"
 #include "DNN.cpp"
 #include "memory_buffer.cpp"
 
+#include <eigen3/Eigen/Eigen>
+typedef Eigen::MatrixXf Matrix;
+typedef Eigen::RowVectorXf RowVector;
+typedef Eigen::VectorXf ColVector;
 
 
 class agentDQL{
@@ -27,7 +32,7 @@ class agentDQL{
         bool bDebug;
 
         // Environment
-        environment* pEnv;
+        env_cart_pole* pEnv;
         // Main NN
         DNN *pDNN1;
         // Target NN

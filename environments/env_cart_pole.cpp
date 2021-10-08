@@ -15,7 +15,7 @@ void env_cart_pole::debug_mode(bool dbg){
 
 
 
-void env_cart_pole::step(int action, std::vector<float> &zstate, float &zreward, bool &zdone){
+void env_cart_pole::step(int action, Eigen::RowVectorXf &zstate, float &zreward, bool &zdone){
     float force;
     
     if (action==1) 
@@ -44,7 +44,10 @@ void env_cart_pole::step(int action, std::vector<float> &zstate, float &zreward,
         theta = theta + tau * thetadot;
     }
 
-    state = {x, xdot, theta, thetadot};
+    state.coeffRef(0) = x;
+    state.coeffRef(1) = xdot;
+    state.coeffRef(2) = theta;
+    state.coeffRef(3) = thetadot;
 
     bool done = false;
     if (x < -x_threshold || x > x_threshold || theta < -theta_threshold_radians || theta > theta_threshold_radians)
@@ -74,10 +77,26 @@ void env_cart_pole::step(int action, std::vector<float> &zstate, float &zreward,
     zdone = done;
 }
 
-std::vector<float> env_cart_pole::reset(){
-    state = {0.0, 0.0, 0.0, 0.0};
+Eigen::RowVectorXf* env_cart_pole::reset(){
+    x = 0.0;
+    xdot = 0.0;
+    theta = 0.0;
+    thetadot = 0.0;
+
+    state.coeffRef(0) = x;
+    state.coeffRef(1) = xdot;
+    state.coeffRef(2) = theta;
+    state.coeffRef(3) = thetadot;
+
+
+    //state.coeffRef(0) = 0.0;
+    //state.coeffRef(1) = 0.0;
+    //state.coeffRef(2) = 0.0;
+    //state.coeffRef(3) = 0.0;
+
+    
     steps_beyond_done = -1;
-    return state;
+    return &state;
 }
 
 void env_cart_pole::render(int framerate){

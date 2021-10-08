@@ -2,9 +2,6 @@
 
 
 
-
-
-
 agentDQL::agentDQL(std::vector<int> topology1, float learningRate, float discount_factor, float epsilon){
     this->learning_rate = learning_rate;
     this->discount_factor = discount_factor;
@@ -12,7 +9,7 @@ agentDQL::agentDQL(std::vector<int> topology1, float learningRate, float discoun
     this->epsilon1 = epsilon;
     this->topology = topology1;
 
-    pEnv = new environment();
+    pEnv = new env_cart_pole();
     pMemory = new memory_buffer();
 
     pDNN1 = new DNN(topology,learningRate,false);
@@ -67,6 +64,8 @@ void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_up
         ep_reward = 0.0;
 
         for (int step = 0; step < max_steps; step++, cnt_target_upd++, cnt_exp_upd++){
+
+            //std::cout << "Ep/St = " << episode << "/" << step << std::endl;
             
             // Render environment, print state
             if (bDebug)
@@ -79,7 +78,7 @@ void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_up
             *observation1 = *observation;
 
             // Apply action to get new state, check if we are at a terminal state.
-            pEnv->step(*observation, reward, done, action);
+            pEnv->step(action, *observation, reward, done);
             
             // Store the occurence for future learning
             pMemory->add(*observation, *observation1, action, done);
@@ -88,8 +87,6 @@ void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_up
             ep_reward += reward;
 
             //std::cout << reward << std::endl;
-
-
 
             // Learn from past outcomes every n steps
             if (cnt_exp_upd == exp_upd){
@@ -148,58 +145,56 @@ int agentDQL::select_epsilon_greedy_action(RowVector& obs){
 
 void agentDQL::epsilon_decay(){
     if (this->epsilon > 0.001)
-        this->epsilon *= 0.99999;
+        this->epsilon *= 0.9999;
 }
 
 
 
 void agentDQL::experience_replay(int update_size){
     int memory_size = pMemory->size();
-    if (memory_size>update_size){
-        for (int i=0; i<update_size; i++){
-            int idx = rand() % memory_size;
-            std::cout << idx << " ";
+    for (int i=0; i<update_size; i++){
+        int idx = rand() % memory_size;
+        //std::cout << idx << " ";
 
-            RowVector* new_obs = pMemory->sample_observation(idx);
-            RowVector* prev_obs = pMemory->sample_observation1(idx);
-            int action_selected = pMemory->sample_action(idx);
-            bool done = pMemory->sample_done(idx);
+        RowVector* new_obs = pMemory->sample_observation(idx);
+        RowVector* prev_obs = pMemory->sample_observation1(idx);
+        int action_selected = pMemory->sample_action(idx);
+        bool done = pMemory->sample_done(idx);
 
-            //std::cout << "new_obs ";
-            //for (int it1=0; it1<new_obs->size(); it1++)
-            //    std::cout << new_obs->coeffRef(it1) << " ";
-            //std::cout << std::endl;
+        //std::cout << "new_obs ";
+        //for (int it1=0; it1<new_obs->size(); it1++)
+        //    std::cout << new_obs->coeffRef(it1) << " ";
+        //std::cout << std::endl;
 
-            //std::cout << "prev_obs ";
-            //for (int it1=0; it1<prev_obs->size(); it1++)
-            //    std::cout << prev_obs->coeffRef(it1) << " ";
-            //std::cout << std::endl;
+        //std::cout << "prev_obs ";
+        //for (int it1=0; it1<prev_obs->size(); it1++)
+        //    std::cout << prev_obs->coeffRef(it1) << " ";
+        //std::cout << std::endl;
 
-            RowVector action_values(4), next_action_values(4), experimental_values(4);
-            pDNN1->forward(*prev_obs,action_values);
-            pDNN2->forward(*new_obs,next_action_values);
-            experimental_values = action_values;
+        RowVector action_values(4), next_action_values(4), experimental_values(4);
+        pDNN1->forward(*prev_obs,action_values);
+        pDNN2->forward(*new_obs,next_action_values);
+        experimental_values = action_values;
 
-            float max_next_action_values = 0.0;
-            for (int i=0; i<next_action_values.size(); i++){
-                if (next_action_values(i) > max_next_action_values) 
-                    max_next_action_values = next_action_values(i);
-            }
-
-            if (done){
-                experimental_values[action_selected] = -1;
-            }
-            else{
-                experimental_values[action_selected] = 1 + discount_factor*max_next_action_values;
-            }
-
-            pDNN1->backward(action_values, experimental_values);
+        float max_next_action_values = 0.0;
+        for (int i=0; i<next_action_values.size(); i++){
+            if (next_action_values(i) > max_next_action_values) 
+                max_next_action_values = next_action_values(i);
         }
-        std::cout << std::endl;
 
-        // Epsilon decays as learning advances
-        epsilon_decay();
+        if (done){
+            experimental_values[action_selected] = -1;
+        }
+        else{
+            experimental_values[action_selected] = 1 + discount_factor*max_next_action_values;
+        }
+
+        pDNN1->backward(action_values, experimental_values);
     }
+    //std::cout << std::endl;
+
+    // Epsilon decays as learning advances
+    epsilon_decay();
 }
 
 

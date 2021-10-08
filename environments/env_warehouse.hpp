@@ -1,5 +1,5 @@
-#ifndef ENVIRONMENT_HPP
-#define ENVIRONMENT_HPP
+#ifndef ENV_WAREHOUSE_HPP
+#define ENV_WAREHOUSE_HPP
 
 
 #include <iostream>
@@ -14,7 +14,7 @@ typedef Eigen::RowVectorXf RowVector;
 typedef Eigen::VectorXf ColVector;
 
 
-class environment{
+class env_warehouse{
     private:
         int row, col;
         
@@ -32,8 +32,8 @@ class environment{
 
 
     public:
-        environment();
-        ~environment();
+        env_warehouse();
+        ~env_warehouse();
 
         void debug_mode(bool bDebug);
 
@@ -45,7 +45,7 @@ class environment{
 
         void render();
 
-        void step(RowVector &observation, float &reward, bool &done, int action);
+        void step(int action, RowVector &observation, float &reward, bool &done);
 
         bool is_terminal_state();
 
