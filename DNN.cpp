@@ -57,7 +57,11 @@ DNN::DNN(std::vector<int> topology, float learningRate, bool bDebug){
     for (int i=1; i<topology.size(); i++){
         if (i!=topology.size()-1){
             weights.push_back(new Eigen::MatrixXf(topology[i-1] + 1, topology[i]+1));
+            
             weights.back()->setRandom();
+            *weights.back() = (*weights.back() + Eigen::MatrixXf::Constant(weights.back()->rows(),weights.back()->cols(),1.))*1./2.; // add 1 to the matrix to have values between 0 and 2; multiply with range/2
+            *weights.back() = (*weights.back() + Eigen::MatrixXf::Constant(weights.back()->rows(),weights.back()->cols(),-0.5)); // add 1 to the matrix to have values between 0 and 2; multiply with range/2
+  
             weights.back()->col(topology[i]).setZero();
             weights.back()->coeffRef(topology[i-1],topology[i]) = 1.0;
         }
@@ -107,8 +111,6 @@ DNN::DNN(std::vector<int> topology, float learningRate, bool bDebug){
         }
         std::cout << std::endl;
     }
-
-
 }
 
 
@@ -136,17 +138,34 @@ void DNN::forward(Eigen::RowVectorXf& input){
 
 void DNN::forward(Eigen::RowVectorXf& input, Eigen::RowVectorXf& output){
     // Set the input to input layer. Block(startRow, startCol, blockRows, blockCols) returns a part of the given matrix
+    
     neuronLayers.front()->block(0, 0, 1, neuronLayers.front()->size()-1) = input;
 
     // Propagate the data forward
     for (uint i=1; i<topology.size(); i++) {
         (*neuronLayers[i]) = (*neuronLayers[i - 1]) * (*weights[i - 1]);
-        if (i<topology.size()-1)
+        if (i>0 && i<topology.size()-1)
             neuronLayers[i]->block(0, 0, 1, topology[i]).unaryExpr(std::ptr_fun(f_activation));
     }
     
+    
+
+    /*
+    neuronLayers.front()->block(0, 0, 1, neuronLayers.front()->size() - 1) = input;
+ 
+    for (uint i = 1; i < topology.size(); i++)
+        (*neuronLayers[i]) = (*neuronLayers[i - 1]) * (*weights[i - 1]);
+ 
+    for (uint i = 1; i < topology.size() - 1; i++)
+        neuronLayers[i]->block(0, 0, 1, topology[i]).unaryExpr(std::ptr_fun(f_activation));
+    */
+
+
     output = *neuronLayers.back();
 }
+
+
+
 
 
 
@@ -165,11 +184,23 @@ void DNN::backward(Eigen::RowVectorXf& output){
 void DNN::backward(Eigen::RowVectorXf& actions, Eigen::RowVectorXf& experimentals){
     // Calculate the errors made by neurons of last layer
     (*deltas.back()) = actions - experimentals;
+    //(*deltas.back()) = experimentals - actions;
+    //std::cout << std::endl << "calcErrors   " << actions << "   |   " << experimentals << "   |   " << *deltas.back() << std::endl;
 
     // Error calculation of hidden layers is different, we will begin by the last hidden
     // layer and we will continue till the first hidden layer
     for (uint i = topology.size() - 2; i>0; i--)
         (*deltas[i]) = (*deltas[i+1]) * (weights[i]->transpose());
+
+    /*
+    for (int i=0; i<deltas.size(); i++){
+        std::cout << "deltas[" << i << "] = ";
+        for (int j=0; j<deltas[i]->size(); j++){
+            std::cout << deltas[i]->coeffRef(j) << " ";
+        }
+        std::cout << std::endl;
+    }
+    */
 
     updateWeights();
 }
@@ -211,12 +242,27 @@ void DNN::updateWeights(){
                 }
             }
         }
+
+        /*
+        std::cout << std::endl;
+        std::cout << "weights[" << i << "] = " << std::endl;
+        for (int k1 = 0; k1 < weights[i]->rows(); k1++){
+            for (int k2 = 0; k2 < weights[i]->cols(); k2++){
+                std::cout << " " << weights[i]->coeffRef(k1,k2);
+            }
+            std::cout << std::endl;
+        }
+        std::cout << std::endl;
+        */
     }
 }
 
 
 void DNN::set_weights(DNN *pDNN){
-    weights = pDNN->weights;
+    for (unsigned int i=0; i<weights.size(); i++){
+        *weights[i] = *pDNN->weights[i];
+    }
+    //weights = pDNN->weights;
 }
 
 
