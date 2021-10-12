@@ -7,7 +7,7 @@
 
 //#include "environments/env_warehouse.cpp"
 #include "environments/env_cart_pole.cpp"
-#include "DNN.cpp"
+#include "NN.cpp"
 #include "memory_buffer.cpp"
 
 #include <eigen3/Eigen/Eigen>
@@ -34,9 +34,9 @@ class agentDQL{
         // Environment
         env_cart_pole* pEnv;
         // Main NN
-        DNN *pDNN1;
+        NN *pNN1;
         // Target NN
-        DNN *pDNN2;
+        NN *pNN2;
         // Memory
         memory_buffer *pMemory;
 

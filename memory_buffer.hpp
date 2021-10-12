@@ -33,6 +33,7 @@ class memory_buffer{
         int sample_action(int idx);
         bool sample_done(int idx);
 
+        void display_memory(int idx);
 
 };
 

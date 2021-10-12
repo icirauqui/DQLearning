@@ -1,4 +1,4 @@
-#include "agentDQL.hpp"
+#include "agentDQL1.hpp"
 
 
 
@@ -12,10 +12,11 @@ agentDQL::agentDQL(std::vector<int> topology1, float learningRate, float discoun
     pEnv = new env_cart_pole();
     pMemory = new memory_buffer();
 
-    pDNN1 = new DNN(topology,learningRate,false);
-    pDNN2 = new DNN(topology,learningRate,false);
+    pNN1 = new NN(topology,learningRate,false);
+    pNN2 = new NN(topology,learningRate,false);
 
-    pDNN2->set_weights(pDNN1);
+    for (int i=0; i<pNN1->model.size(); i++)
+        pNN2->model[i]->set_weights(pNN1->model[i]->get_weights());
 
     // Ready randon number generator
     srand(time(0));
@@ -67,8 +68,9 @@ void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_up
                 pEnv->render();
 
             // Select action with main NN, performs a forward that returns Q(s,a;th)
-            int action = this->select_epsilon_greedy_action(*observation,true);
+            int action = this->select_epsilon_greedy_action(*observation,false);
 
+            //std::cout << " Action = " << action << std::endl;
             //action = 1;
             
             // Backup starting state
@@ -88,7 +90,7 @@ void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_up
 
             // Learn from past outcomes every n steps
             if (cnt_exp_upd == exp_upd){
-                //std::cout << "exp_upd" << std::endl;
+                std::cout << "exp_upd" << std::endl;
                 if(exp_upd < pMemory->size())
                     this->experience_replay(exp_upd);
                 cnt_exp_upd = 0;
@@ -96,8 +98,9 @@ void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_up
 
             // Update target NN weights every m steps (m>n)
             if (cnt_target_upd == target_upd){
-                //std::cout << "target_upd " << std::endl;
-                pDNN2->set_weights(pDNN1);
+                std::cout << "target_upd " << std::endl;
+                for (int i=0; i<pNN1->model.size(); i++)
+                    pNN2->model[i]->set_weights(pNN1->model[i]->get_weights());
                 cnt_target_upd = 0;
             }
 
@@ -171,7 +174,7 @@ int agentDQL::select_epsilon_greedy_action(RowVector& obs, bool bTrain){
     }
     else {
         RowVector output;
-        pDNN1->forward(obs,output);
+        pNN1->forward(obs,output);
         float max_q = - static_cast <float> (RAND_MAX);
         int act = 0;
         for (int i=0; i<output.size(); i++){
@@ -199,6 +202,7 @@ void agentDQL::experience_replay(int update_size){
 
     for (int i=0; i<update_size; i++){
         int idx = rand() % memory_size;
+        //std::cout << "Memory = " << i+1 << "/" << update_size << std::endl;
         //pMemory->display_memory(idx);
 
         RowVector* new_obs = pMemory->sample_observation(idx);
@@ -207,8 +211,8 @@ void agentDQL::experience_replay(int update_size){
         bool done = pMemory->sample_done(idx);
 
         RowVector action_values(topology.back()), next_action_values(topology.back()), experimental_values(topology.back());
-        pDNN1->forward(*prev_obs,action_values);    // qué acción tomaría ahora con lo que veía entonces
-        pDNN2->forward(*new_obs,next_action_values);
+        pNN1->forward(*prev_obs,action_values);    // qué acción tomaría ahora con lo que veía entonces
+        pNN2->forward(*new_obs,next_action_values);
         experimental_values = action_values;
 
         float max_next_action_values = - static_cast <float> (RAND_MAX);
@@ -222,9 +226,9 @@ void agentDQL::experience_replay(int update_size){
         else
             experimental_values[action_selected] = 1 + discount_factor*max_next_action_values;
 
-        //std::cout << "Action Values = " << action_values << "   - Experimental Values = " << experimental_values << std::endl;
+        std::cout << "Action Values = " << action_values << "   - Experimental Values = " << experimental_values << std::endl;
 
-        pDNN1->backward(action_values, experimental_values);
+        pNN1->backward(action_values, experimental_values);
 
         
     }

@@ -78,21 +78,26 @@ void env_cart_pole::step(int action, Eigen::RowVectorXf &zstate, float &zreward,
 }
 
 Eigen::RowVectorXf* env_cart_pole::reset(){
-    x = 0.0;
-    xdot = 0.0;
-    theta = 0.0;
-    thetadot = 0.0;
+
+    float LO = -0.05;
+    float HI = +0.05;
+    x = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
+    xdot = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
+    theta = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
+    thetadot = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
+
+
+
+    x = 0.03776518;
+    xdot = -0.01966171;
+    theta = 0.01873182;
+    thetadot = 0.01046265;
+      
 
     state.coeffRef(0) = x;
     state.coeffRef(1) = xdot;
     state.coeffRef(2) = theta;
     state.coeffRef(3) = thetadot;
-
-
-    //state.coeffRef(0) = 0.0;
-    //state.coeffRef(1) = 0.0;
-    //state.coeffRef(2) = 0.0;
-    //state.coeffRef(3) = 0.0;
 
     
     steps_beyond_done = -1;
