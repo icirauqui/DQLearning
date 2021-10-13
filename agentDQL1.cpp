@@ -2,9 +2,9 @@
 
 
 
-agentDQL::agentDQL(std::vector<int> topology1, float learningRate, float discount_factor, float epsilon){
+agentDQL::agentDQL(std::vector<int> topology1, float learningRate, float gamma, float epsilon){
     this->learning_rate = learning_rate;
-    this->discount_factor = discount_factor;
+    this->gamma = gamma;
     this->epsilon = epsilon;
     this->epsilon1 = epsilon;
     this->topology = topology1;
@@ -40,7 +40,8 @@ void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_up
     RowVector* observation = new RowVector(2);
     RowVector* observation1 = new RowVector(2);
     int action;
-    float reward, ep_reward;
+    float reward = 0.0;
+    float ep_reward = 0.0;
     float max_ep_reward = -1000;
     bool done;
     
@@ -68,10 +69,7 @@ void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_up
                 pEnv->render();
 
             // Select action with main NN, performs a forward that returns Q(s,a;th)
-            int action = this->select_epsilon_greedy_action(*observation,false);
-
-            //std::cout << " Action = " << action << std::endl;
-            //action = 1;
+            int action = this->select_epsilon_greedy_action(*observation,true);
             
             // Backup starting state
             *observation1 = *observation;
@@ -88,9 +86,13 @@ void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_up
             // Add to total episode reward
             ep_reward += reward;
 
+            if(exp_upd < pMemory->size())
+                this->experience_replay(exp_upd);
+
+            /*
             // Learn from past outcomes every n steps
             if (cnt_exp_upd == exp_upd){
-                std::cout << "exp_upd" << std::endl;
+                //std::cout << "exp_upd" << std::endl;
                 if(exp_upd < pMemory->size())
                     this->experience_replay(exp_upd);
                 cnt_exp_upd = 0;
@@ -98,17 +100,18 @@ void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_up
 
             // Update target NN weights every m steps (m>n)
             if (cnt_target_upd == target_upd){
-                std::cout << "target_upd " << std::endl;
+                //std::cout << "target_upd " << std::endl;
                 for (int i=0; i<pNN1->model.size(); i++)
                     pNN2->model[i]->set_weights(pNN1->model[i]->get_weights());
                 cnt_target_upd = 0;
             }
+            */
 
             // End episode if we have reached a terminal state
             if (done){
                 if (bDebug)
                     pEnv->render();
-                if (num_episodes < 1000 || episode % 1000 == 0)
+                //if (num_episodes < 100 || episode % 100 == 0)
                     std::cout << "Episode " << episode << " (" << 100*episode/num_episodes << "%) has ended after " << step + 1 << " with reward " << ep_reward << "/" << max_ep_reward << " " << epsilon << std::endl;
                 break;
             }
@@ -211,8 +214,8 @@ void agentDQL::experience_replay(int update_size){
         bool done = pMemory->sample_done(idx);
 
         RowVector action_values(topology.back()), next_action_values(topology.back()), experimental_values(topology.back());
-        pNN1->forward(*prev_obs,action_values);    // qué acción tomaría ahora con lo que veía entonces
         pNN2->forward(*new_obs,next_action_values);
+        pNN1->forward(*prev_obs,action_values);    // qué acción tomaría ahora con lo que veía entonces
         experimental_values = action_values;
 
         float max_next_action_values = - static_cast <float> (RAND_MAX);
@@ -224,11 +227,16 @@ void agentDQL::experience_replay(int update_size){
         if (done)
             experimental_values[action_selected] = -1;
         else
-            experimental_values[action_selected] = 1 + discount_factor*max_next_action_values;
+            experimental_values[action_selected] = 1 + gamma*max_next_action_values;
 
-        std::cout << "Action Values = " << action_values << "   - Experimental Values = " << experimental_values << std::endl;
+        //std::cout << "Action Values = " << action_values << "   - Experimental Values = " << experimental_values << std::endl;
 
         pNN1->backward(action_values, experimental_values);
+        pNN1->update_time();
+        pNN2->update_time();
+
+        for (int i=0; i<pNN1->model.size(); i++)
+            pNN2->model[i]->set_weights(pNN1->model[i]->get_weights());
 
         
     }

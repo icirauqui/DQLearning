@@ -13,12 +13,10 @@ void memory_buffer::add(Eigen::RowVectorXf& obs, Eigen::RowVectorXf& obs1, int a
     Eigen::RowVectorXf* obst = new Eigen::RowVectorXf(obs.size());
     *obst = obs;
     vObservation.push_back(obst);
-    //vObservation.push_back(&obs);
 
     Eigen::RowVectorXf* obst1 = new Eigen::RowVectorXf(obs1.size());
     *obst1 = obs1;
     vObservation1.push_back(obst1);
-    //vObservation1.push_back(&obs1);
 
     vAction.push_back(act);
     vDone.push_back(bdone);

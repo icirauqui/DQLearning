@@ -4,13 +4,7 @@
 
 int main(){
 
-    agentDQL* pAgent = new agentDQL({4,24,24,2},0.001,0.95,1.0);
-
-    int layers = 10;
-
-    for (int i=layers-1; i>=0; i--)
-        std::cout << i << " ";
-    std::cout << std::endl;
+    agentDQL* pAgent = new agentDQL({4,24,24,2},0.01,0.95,1.0);
     
     int episodes = 1000;
 
@@ -40,10 +34,13 @@ int main(){
     } while (option != 9);
 
 
+
+
+
+
+
+
     return 0;
-
-
-
 
 
 }

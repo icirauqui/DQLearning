@@ -15,7 +15,7 @@ class NNLayer {
         int input_size;
         int output_size;
         float learning_rate;
-        std::string f_act;
+        std::string f_act = "none";
 
         Eigen::MatrixXf* pWeights;
         Eigen::RowVectorXf* pQValues;
@@ -34,13 +34,13 @@ class NNLayer {
 
     public:
 
-        NNLayer(int input_size, int output_size, std::string activation = "relu", float lr = 0.001, bool bDebug = false);
+        NNLayer(int input_size, int output_size, std::string activation = "none", float lr = 0.001, bool bDebug = false);
         ~NNLayer();
         void debug_mode(bool bdbg = false);
 
         Eigen::RowVectorXf* forward(Eigen::RowVectorXf& input);
 
-        void update_weights(Eigen::RowVectorXf& gradient);
+        void update_weights(Eigen::MatrixXf& gradient);
 
         Eigen::RowVectorXf* backward(Eigen::RowVectorXf& gradient_from_above);
 

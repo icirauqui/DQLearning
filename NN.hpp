@@ -27,11 +27,13 @@ class NN{
 
         void backward(Eigen::RowVectorXf& actions, Eigen::RowVectorXf& experimentals);
 
+        void update_time();
 
 
         std::vector<NNLayer*> model;
 
 };
+
 
 
 

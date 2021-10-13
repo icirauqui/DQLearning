@@ -56,7 +56,8 @@
         # this is pointwise
         if self.activation_function != None:
             adjusted_mul = np.multiply(relu_derivative(self.backward_store_out),gradient_from_above)
-        D_i = np.dot(np.transpose(np.reshape(self.backward_store_in, (1, len(self.backward_store_in)))), np.reshape(adjusted_mul, (1,len(adjusted_mul))))
+        D_i = np.dot(     np.transpose(backward_store_in), 
+                          np.reshape(adjusted_mul)
         delta_i = np.dot(adjusted_mul, np.transpose(self.weights))[:-1]
         self.update_weights(D_i)
         return delta_i
