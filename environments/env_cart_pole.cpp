@@ -86,13 +86,18 @@ Eigen::RowVectorXf* env_cart_pole::reset(){
     theta = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
     thetadot = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
 
+    /*
+    std::vector<float> initstate = std::vector<float> (4,0);    
+    std::ifstream fp0("init_state.csv");
+    for (unsigned int i=0; i<initstate.size(); i++)
+        fp0 >> initstate[i];
 
-
-    x = 0.03776518;
-    xdot = -0.01966171;
-    theta = 0.01873182;
-    thetadot = 0.01046265;
-      
+    x = initstate[0];
+    xdot = initstate[1];
+    theta = initstate[2];
+    thetadot = initstate[3];
+    */
+    
 
     state.coeffRef(0) = x;
     state.coeffRef(1) = xdot;
@@ -105,7 +110,7 @@ Eigen::RowVectorXf* env_cart_pole::reset(){
 }
 
 void env_cart_pole::render(int framerate){
-    float x1 = 1000*x;
+    float x1 = 400*x;
     float th1 = 1*theta;
 
     img = cv::Mat(600,800,CV_8UC3, cv::Scalar(255,255,255));
