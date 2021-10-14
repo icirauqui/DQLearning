@@ -17,8 +17,8 @@ class memory_buffer{
         std::vector<bool> vDone;
 
 
-
     public:
+    
         memory_buffer();
 
         ~memory_buffer();

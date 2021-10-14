@@ -7,7 +7,7 @@
 
 //#include "environments/env_warehouse.cpp"
 #include "environments/env_cart_pole.cpp"
-#include "DNN.cpp"
+#include "NN.cpp"
 #include "memory_buffer.cpp"
 
 #include <eigen3/Eigen/Eigen>
@@ -25,7 +25,7 @@ class agentDQL{
         std::vector<int> topology;
 
         float learning_rate = 0.9;
-        float discount_factor = 0.9;
+        float gamma = 0.9;
         float epsilon = 0.9;
         float epsilon1 = 0.0;
 
@@ -34,16 +34,16 @@ class agentDQL{
         // Environment
         env_cart_pole* pEnv;
         // Main NN
-        DNN *pDNN1;
+        NN *pNN1;
         // Target NN
-        DNN *pDNN2;
+        NN *pNN2;
         // Memory
         memory_buffer *pMemory;
 
     public:
 
 
-        agentDQL(std::vector<int> topology1, float learningRate, float discount_factor, float epsilon);
+        agentDQL(std::vector<int> topology1, float learningRate, float gamma, float epsilon);
 
         ~agentDQL();
 

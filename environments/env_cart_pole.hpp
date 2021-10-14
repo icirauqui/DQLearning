@@ -110,13 +110,6 @@ class env_cart_pole{
 
         void render(int framerate = 33);
 
-
-
-
-
-
-
-
 };
 
 

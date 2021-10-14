@@ -86,25 +86,11 @@ Eigen::RowVectorXf* env_cart_pole::reset(){
     theta = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
     thetadot = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
 
-    /*
-    std::vector<float> initstate = std::vector<float> (4,0);    
-    std::ifstream fp0("init_state.csv");
-    for (unsigned int i=0; i<initstate.size(); i++)
-        fp0 >> initstate[i];
-
-    x = initstate[0];
-    xdot = initstate[1];
-    theta = initstate[2];
-    thetadot = initstate[3];
-    */
-    
-
     state.coeffRef(0) = x;
     state.coeffRef(1) = xdot;
     state.coeffRef(2) = theta;
     state.coeffRef(3) = thetadot;
 
-    
     steps_beyond_done = -1;
     return &state;
 }

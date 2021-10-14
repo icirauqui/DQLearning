@@ -29,13 +29,8 @@ class NN{
 
         void update_time();
 
-
         std::vector<NNLayer*> model;
-
 };
-
-
-
 
 
 

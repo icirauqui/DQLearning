@@ -7,7 +7,6 @@ memory_buffer::~memory_buffer(){};
 
 
 void memory_buffer::add(Eigen::RowVectorXf& obs, Eigen::RowVectorXf& obs1, int act, bool bdone){
-
     // Duplicate the observations with new pointers to the heap, otherwise the original pointer info will be updated, 
     // thus we'd only save the last data.
     Eigen::RowVectorXf* obst = new Eigen::RowVectorXf(obs.size());
