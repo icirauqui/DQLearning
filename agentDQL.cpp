@@ -233,3 +233,13 @@ void agentDQL::backup_epsilon(){
 void agentDQL::restore_epsilon(){
     epsilon = epsilon1;
 }
+
+
+void agentDQL::save_model(){
+    std::cout << "Model Saved" << std::endl;
+}
+
+
+void agentDQL::load_model(){
+    std::cout << "Model Loaded" << std::endl;
+}

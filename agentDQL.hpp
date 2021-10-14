@@ -66,6 +66,9 @@ class agentDQL{
         void backup_epsilon();
         void restore_epsilon();
 
+        void save_model();
+        void load_model();
+
 };
 
 
