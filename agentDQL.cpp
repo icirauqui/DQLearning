@@ -242,7 +242,7 @@ void agentDQL::save_model(){
     for (int i=0; i<pNN2->model.size(); i++)
         model_weigths.push_back(pNN2->model[i]->get_weights());
 
-    std::string fileName = "model.csv";
+    std::string fileName = "model_" + pEnv->get_env_id() + ".csv";
     std::ofstream fileOut;
     fileOut.open(fileName);
 
@@ -265,7 +265,7 @@ void agentDQL::load_model(){
     for (int i=0; i<pNN2->model.size(); i++)
         model_weigths.push_back(pNN2->model[i]->get_weights());
 
-    std::string fileName = "model.csv";
+    std::string fileName = "model_" + pEnv->get_env_id() + ".csv";
     std::ifstream fileIn;
 
     for (int i = 0; i<model_weigths.size(); i++){      

@@ -13,6 +13,10 @@ void env_cart_pole::debug_mode(bool dbg){
     this->bDebug = dbg;
 }
 
+std::string env_cart_pole::get_env_id(){
+    return envId;
+}
+
 
 
 void env_cart_pole::step(int action, Eigen::RowVectorXf &zstate, float &zreward, bool &zdone){

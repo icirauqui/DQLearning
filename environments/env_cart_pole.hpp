@@ -95,6 +95,9 @@ class env_cart_pole{
         cv::Mat img = cv::Mat(600,800,CV_8UC3, cv::Scalar(255,255,255));
 
         bool bDebug = false;
+        std::string envId = "CartPole";
+
+
 
     public:
 
@@ -102,6 +105,7 @@ class env_cart_pole{
         ~env_cart_pole();
 
         void debug_mode(bool dbg);
+        std::string get_env_id();
 
         void step(int action, Eigen::RowVectorXf &zstate, float &zreward, bool &zdone);
 
