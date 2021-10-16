@@ -81,28 +81,31 @@ void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_up
             // Add to total episode reward
             ep_reward += reward;
             
+            if(exp_upd < pMemory->size())
+                this->experience_replay(exp_upd);
+
             // Learn from past outcomes every n steps
-            if (cnt_exp_upd == exp_upd){
-                if(exp_upd < pMemory->size())
-                    this->experience_replay(exp_upd);
-                pNN1->update_time();
-                pNN2->update_time();
-                cnt_exp_upd = 0;
-            }
+            //if (cnt_exp_upd == exp_upd){
+            //    if(exp_upd < pMemory->size())
+            //        this->experience_replay(exp_upd);
+            //    pNN1->update_time();
+            //    pNN2->update_time();
+            //    cnt_exp_upd = 0;
+            //}
 
             // Update target NN weights every m steps (m>n)
-            if (cnt_target_upd == target_upd){
-                for (int i=0; i<pNN1->model.size(); i++)
-                    pNN2->model[i]->set_weights(pNN1->model[i]->get_weights());
-                cnt_target_upd = 0;
-            }
+            //if (cnt_target_upd == target_upd){
+            //    for (int i=0; i<pNN1->model.size(); i++)
+            //        pNN2->model[i]->set_weights(pNN1->model[i]->get_weights());
+            //    cnt_target_upd = 0;
+            //}
             
 
             // End episode if we have reached a terminal state
             if (done){
                 if (bDebug)
                     pEnv->render();
-                    std::cout << "Episode " << episode << " (" << 100*episode/num_episodes << "%) has ended after " << step + 1 << " with reward " << ep_reward << "/" << max_ep_reward << " " << epsilon << std::endl;
+                    std::cout << "Episode " << episode + 1 << " (" << 100*episode/num_episodes << "%) has ended after " << step + 1 << " with reward " << ep_reward << "/" << max_ep_reward << " " << epsilon << std::endl;
                 break;
             }
         }
@@ -148,7 +151,7 @@ void agentDQL::test(int max_steps, int num_episodes, bool verbose){
             if (done){
                 if (verbose)
                     pEnv->render();
-                std::cout << "Episode " << episode << " has ended after " << step + 1 << " with reward " << ep_reward << "/" << max_ep_reward << " " << epsilon << std::endl;
+                std::cout << "Episode " << episode + 1 << " has ended after " << step + 1 << " with reward " << ep_reward << "/" << max_ep_reward << " " << epsilon << std::endl;
                 break;
             }
         }
@@ -221,6 +224,14 @@ void agentDQL::experience_replay(int update_size){
     }
 
     epsilon_decay();
+
+
+    pNN1->update_time();
+    pNN2->update_time();
+    for (int i=0; i<pNN1->model.size(); i++)
+        pNN2->model[i]->set_weights(pNN1->model[i]->get_weights());
+
+
 }
 
 
