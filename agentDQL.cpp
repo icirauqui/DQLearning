@@ -151,7 +151,7 @@ void agentDQL::test(int max_steps, int num_episodes, bool verbose){
 
             ep_reward += reward;
 
-            if (done){
+            if (done || step==max_steps-1){
                 if (verbose)
                     pEnv->render();
                 std::cout << "Episode " << episode + 1 << " has ended after " << step + 1 << " with reward " << ep_reward << "/" << max_ep_reward << " " << epsilon << std::endl;
