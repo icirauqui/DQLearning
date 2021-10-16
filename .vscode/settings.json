@@ -61,6 +61,13 @@
         "list": "cpp",
         "typeindex": "cpp",
         "variant": "cpp",
-        "eigen": "cpp"
+        "eigen": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "unordered_set": "cpp",
+        "numbers": "cpp",
+        "semaphore": "cpp",
+        "stop_token": "cpp",
+        "valarray": "cpp"
     }
 }

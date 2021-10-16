@@ -30,17 +30,16 @@ int main(){
             pAgent->test(500,10,true);
         }
         else if (option==3){
-            std::cout << "Saving model... -test-" << std::endl;
+            pAgent->save_model();
         }
         else if (option==4){
-            std::cout << "Loading model... -test-" << std::endl;
+            pAgent->load_model();
         }
     } while (option != 9);
 
 
+
     return 0;
-
-
 }
 
 
