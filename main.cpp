@@ -24,10 +24,10 @@ int main(){
         if (option==1){
             std::cout << "Episodes = "; std::cin >> episodes;
             pAgent->debug_mode(false);
-            pAgent->train(episodes,500,40,10);
+            pAgent->train(episodes,500,40,20);
         }
         else if (option==2){
-            pAgent->test(500,10,true);
+            pAgent->test(500,5,true);
         }
         else if (option==3){
             pAgent->save_model();
@@ -40,5 +40,4 @@ int main(){
 
     return 0;
 }
-
 

@@ -83,7 +83,6 @@ void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_up
             
             // Learn from past outcomes every n steps
             if (cnt_exp_upd == exp_upd){
-                //std::cout << "exp_upd" << std::endl;
                 if(exp_upd < pMemory->size())
                     this->experience_replay(exp_upd);
                 pNN1->update_time();
@@ -132,7 +131,7 @@ void agentDQL::test(int max_steps, int num_episodes, bool verbose){
         max_ep_reward = 0.0;
         for (int i=0; i<last_100_ep_rewards.size(); i++)
             max_ep_reward += last_100_ep_rewards[i];
-        max_ep_reward /= 100;
+        max_ep_reward /= last_100_ep_rewards.size();
 
         ep_reward = 0.0;
 
@@ -266,20 +265,12 @@ void agentDQL::load_model(){
         model_weigths.push_back(pNN2->model[i]->get_weights());
 
     std::string fileName = "model_" + pEnv->get_env_id() + ".csv";
-    std::ifstream fileIn;
+    std::ifstream fileIn(fileName);
 
     for (int i = 0; i<model_weigths.size(); i++){      
         for (int r=0; r<model_weigths[i]->rows(); r++)
             for (int c=0; c<model_weigths[i]->cols(); c++)
                 fileIn >> model_weigths[i]->coeffRef(r,c);
-    }
-
-    for (int i=0; i<model_weigths.size(); i++){
-        int model_size = pNN1->model.size();
-        if (i<model_size)
-            pNN1->model[i]->set_weights(model_weigths[i]);
-        else
-            pNN2->model[i-model_size]->set_weights(model_weigths[i]);
     }
 
     std::cout << "Model Loaded" << std::endl << std::endl;

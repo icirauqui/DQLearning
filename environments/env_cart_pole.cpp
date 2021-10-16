@@ -100,7 +100,7 @@ Eigen::RowVectorXf* env_cart_pole::reset(){
 }
 
 void env_cart_pole::render(int framerate){
-    float x1 = 400*x;
+    float x1 = 166*x;
     float th1 = 1*theta;
 
     img = cv::Mat(600,800,CV_8UC3, cv::Scalar(255,255,255));
