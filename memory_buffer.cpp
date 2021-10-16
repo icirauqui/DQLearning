@@ -57,3 +57,17 @@ void memory_buffer::display_memory(int idx){
     }
     std::cout << "| " << vAction[idx] << " | " << vDone[idx] << std::endl;
 }
+
+void memory_buffer::forget_memory(int idx){
+    vObservation.erase(vObservation.begin() + idx - 1);
+    vObservation1.erase(vObservation1.begin() + idx - 1);
+    vAction.erase(vAction.begin() + idx - 1);
+    vDone.erase(vDone.begin() + idx - 1);
+}
+
+void memory_buffer::clear_memory(){
+    vObservation.clear();
+    vObservation1.clear();
+    vAction.clear();
+    vDone.clear();
+}

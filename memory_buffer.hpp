@@ -35,6 +35,9 @@ class memory_buffer{
 
         void display_memory(int idx);
 
+        void forget_memory(int idx);
+        void clear_memory();
+
 };
 
 #endif

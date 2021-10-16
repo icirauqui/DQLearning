@@ -81,7 +81,7 @@ void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_up
             // Add to total episode reward
             ep_reward += reward;
             
-            if(exp_upd < pMemory->size())
+            if(pMemory->size() > exp_upd)
                 this->experience_replay(exp_upd);
 
             // Learn from past outcomes every n steps
@@ -103,9 +103,12 @@ void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_up
 
             // End episode if we have reached a terminal state
             if (done){
+                //this->experience_replay(pMemory->size());
+                //pMemory->clear_memory();
+
                 if (bDebug)
                     pEnv->render();
-                    std::cout << "Episode " << episode + 1 << " (" << 100*episode/num_episodes << "%) has ended after " << step + 1 << " with reward " << ep_reward << "/" << max_ep_reward << " " << epsilon << std::endl;
+                std::cout << "Episode " << episode + 1 << " (" << 100*episode/num_episodes << "%) has ended after " << step + 1 << " with reward " << ep_reward << "/" << max_ep_reward << " " << epsilon << std::endl;
                 break;
             }
         }
@@ -187,8 +190,22 @@ int agentDQL::select_epsilon_greedy_action(RowVector& obs, bool bTrain){
 
 
 void agentDQL::epsilon_decay(){
-    if (this->epsilon > 0.001)
-        this->epsilon *= 0.9999;
+    if (this->epsilon > this->eps_min)
+        this->epsilon *= this->eps_decay;
+}
+
+
+void agentDQL::shuffle(int *arr, size_t n){
+    if (n > 1){
+        size_t i;
+        //srand(time(NULL));
+        for (i = 0; i < n - 1; i++){
+          size_t j = i + rand() / (RAND_MAX / (n - i) + 1);
+          int t = arr[j];
+          arr[j] = arr[i];
+          arr[i] = t;
+        }
+    }
 }
 
 
@@ -196,8 +213,15 @@ void agentDQL::epsilon_decay(){
 void agentDQL::experience_replay(int update_size){
     int memory_size = pMemory->size();
 
+    int arr[memory_size];
+    for (int i=0; i<memory_size; i++){
+        arr[i] = i;
+    }
+    shuffle(arr,memory_size);
+
     for (int i=0; i<update_size; i++){
-        int idx = rand() % memory_size;
+        //int idx = rand() % memory_size;
+        int idx = arr[i];
 
         RowVector* new_obs = pMemory->sample_observation(idx);
         RowVector* prev_obs = pMemory->sample_observation1(idx);
@@ -224,7 +248,6 @@ void agentDQL::experience_replay(int update_size){
     }
 
     epsilon_decay();
-
 
     pNN1->update_time();
     pNN2->update_time();

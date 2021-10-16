@@ -30,6 +30,9 @@ class agentDQL{
         float epsilon = 0.9;
         float epsilon1 = 0.0;
 
+        float eps_min = 0.01;
+        float eps_decay = 0.997;
+
         bool bDebug;
 
         // Environment
@@ -63,6 +66,7 @@ class agentDQL{
         void epsilon_decay();
    
         void experience_replay(int update_size);
+        void shuffle(int *arr, size_t n);
 
         void backup_epsilon();
         void restore_epsilon();
@@ -71,6 +75,7 @@ class agentDQL{
         void load_model();
 
 };
+
 
 
 #endif
