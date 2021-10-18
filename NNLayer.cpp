@@ -3,16 +3,17 @@
 
 
 
-float f_activation(float x){
-    if (x>0) return x;
-    else return 0;
-}
+float f_activation(float x){ if (x>0) return x; else return 0; }
+float f_activation_d(float x){ if (x>0) return 1; else return 0; }
 
-float f_activation_d(float x){
-    if (x>0) return 1;
-    else return 0;
-}
+float f_identity(float x){ return x; }
+float f_identity_d(float x){ return 1; }
 
+float f_relu(float x){ if (x>0) return x; else return 0; }
+float f_relu_d(float x){ if (x>0) return 1; else return 0; }
+
+float f_sigmoid(float x){ return 1 / (1 + exp(-x)); }
+float f_sigmoid_d(float x){ float sigmoid = 1 / (1 + exp(-x)); return sigmoid*(1-sigmoid); }
 
 
 
@@ -60,11 +61,30 @@ Eigen::RowVectorXf* NNLayer::forward(Eigen::RowVectorXf& input){
     (*pQValues) = input_with_bias * (*pWeights);
 
     *pQValuesU = *pQValues;
-    if (f_act != "none")
-        (*pQValues) = pQValues->unaryExpr(std::ptr_fun(f_activation));
+
+    //if (f_act != "none")
+    //    (*pQValues) = pQValues->unaryExpr(std::ptr_fun(f_activation));
+
+    if (f_act == "identity")
+        (*pQValues) = pQValues->unaryExpr(std::ptr_fun(f_identity));
+    else if (f_act == "relu")
+        (*pQValues) = pQValues->unaryExpr(std::ptr_fun(f_relu));
+    else if (f_act == "sigmoid")
+        (*pQValues) = pQValues->unaryExpr(std::ptr_fun(f_sigmoid));
 
     return pQValues;
 }
+
+
+
+float f_identity(float x){ return x; }
+float f_identity_d(float x){ return 1; }
+
+float f_relu(float x){ if (x>0) return x; else return 0; }
+float f_relu_d(float x){ if (x>0) return 1; else return 0; }
+
+float f_sigmoid(float x){ return 1 / (1 + exp(-x)); }
+float f_sigmoid_d(float x){ float sigmoid = 1 / (1 + exp(-x)); return sigmoid*(1-sigmoid); }
 
 
 /*
@@ -115,7 +135,14 @@ Eigen::RowVectorXf* NNLayer::backward(Eigen::RowVectorXf& gradient_from_above){
     Eigen::RowVectorXf pQValues_temp = Eigen::RowVectorXf(pQValuesU->size());
     pQValues_temp = *pQValuesU;
     if (f_act != "none"){
-        pQValues_temp = pQValuesU->unaryExpr(std::ptr_fun(f_activation_d));
+        //pQValues_temp = pQValuesU->unaryExpr(std::ptr_fun(f_activation_d));
+        if (f_act == "identity")
+            pQValues_temp = pQValuesU->unaryExpr(std::ptr_fun(f_identity_d));
+        else if (f_act == "relu")
+            pQValues_temp = pQValuesU->unaryExpr(std::ptr_fun(f_relu_d));
+        else if (f_act == "sigmoid")
+            pQValues_temp = pQValuesU->unaryExpr(std::ptr_fun(f_sigmoid_d));
+
         for (unsigned int i=0; i<adjusted_mul.size(); i++)
             adjusted_mul.coeffRef(i) = (pQValues_temp.coeffRef(i)) * gradient_from_above.coeffRef(i);
     }

@@ -32,9 +32,19 @@ env_warehouse::~env_warehouse(){}
 
 
 
-void env_warehouse::debug_mode(bool bDebug){
-    this->bDebug = bDebug;
+
+void env_warehouse::debug_mode(bool dbg){
+    this->bDebug = dbg;
 }
+
+std::string env_warehouse::get_env_id(){
+    return envId;
+}
+
+std::string env_warehouse::get_env_actType(){
+    return actType;
+}
+
 
 
 

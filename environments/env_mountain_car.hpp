@@ -55,7 +55,8 @@ class env_mountain_car{
     private:
 
         bool bDebug = false;
-        std::string envId = "MountainCarCont";
+        std::string envId = "MountainCar";
+        std::string actType = "discrete";
 
         float position_min = -1.2;
         float position_max = 0.6;
@@ -81,6 +82,7 @@ class env_mountain_car{
 
         void debug_mode(bool dbg);
         std::string get_env_id();
+        std::string get_env_actType();
 
         void step(float action, Eigen::RowVectorXf &zstate, float &zreward, bool &zdone);
 

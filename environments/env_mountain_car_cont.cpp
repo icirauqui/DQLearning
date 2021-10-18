@@ -11,9 +11,12 @@ void env_mountain_car_cont::debug_mode(bool dbg){
     this->bDebug = dbg;
 }
 
-
 std::string env_mountain_car_cont::get_env_id(){
     return envId;
+}
+
+std::string env_mountain_car_cont::get_env_actType(){
+    return actType;
 }
 
 

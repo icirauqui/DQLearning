@@ -7,7 +7,8 @@
 #include <fstream>
 
 //#include "environments/env_warehouse.cpp"
-#include "environments/env_cart_pole.cpp"
+//#include "environments/env_cart_pole.cpp"
+#include "environments/environments.hpp"
 #include "NN.cpp"
 #include "memory_buffer.cpp"
 

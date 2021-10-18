@@ -7,13 +7,17 @@ env_mountain_car::env_mountain_car(bool bdbg){
 env_mountain_car::~env_mountain_car(){}
 
 
+
 void env_mountain_car::debug_mode(bool dbg){
     this->bDebug = dbg;
 }
 
-
 std::string env_mountain_car::get_env_id(){
     return envId;
+}
+
+std::string env_mountain_car::get_env_actType(){
+    return actType;
 }
 
 

@@ -17,6 +17,9 @@ std::string env_cart_pole::get_env_id(){
     return envId;
 }
 
+std::string env_cart_pole::get_env_actType(){
+    return actType;
+}
 
 
 void env_cart_pole::step(int action, Eigen::RowVectorXf &zstate, float &zreward, bool &zdone){

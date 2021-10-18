@@ -60,6 +60,10 @@ class env_cart_pole{
 
     private:
 
+        bool bDebug = false;
+        std::string envId = "CartPole";
+        std::string actType = "discrete";
+
         float gravity = 9.8;
         float mass_cart = 1.0;
         float mass_pole = 0.1;
@@ -94,8 +98,6 @@ class env_cart_pole{
         // Render 
         cv::Mat img = cv::Mat(600,800,CV_8UC3, cv::Scalar(255,255,255));
 
-        bool bDebug = false;
-        std::string envId = "CartPole";
 
 
 
@@ -106,10 +108,10 @@ class env_cart_pole{
 
         void debug_mode(bool dbg);
         std::string get_env_id();
+        std::string get_env_actType();
 
         void step(int action, Eigen::RowVectorXf &zstate, float &zreward, bool &zdone);
 
-        //std::vector<float> reset();
         Eigen::RowVectorXf* reset();
 
         void render(int framerate = 33);

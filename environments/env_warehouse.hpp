@@ -16,6 +16,10 @@ typedef Eigen::VectorXf ColVector;
 
 class env_warehouse{
     private:
+        bool bDebug = false;
+        std::string envId = "Warehouse";
+        std::string actType = "discrete";
+
         int row, col;
         
         // Create a 2D array to hold the rewards for each state
@@ -23,7 +27,6 @@ class env_warehouse{
         std::vector<std::vector<int> > rewards;
 
     
-        bool bDebug = false;
 
         std::vector<int> env_dims;
 
@@ -35,7 +38,9 @@ class env_warehouse{
         env_warehouse();
         ~env_warehouse();
 
-        void debug_mode(bool bDebug);
+        void debug_mode(bool dbg);
+        std::string get_env_id();
+        std::string get_env_actType();
 
         RowVector* reset();
 

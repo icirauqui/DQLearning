@@ -1,44 +1,45 @@
 #include <iostream>
 
-#include "environments/env_mountain_car_cont.cpp"
+#include "agentDQL.cpp"
 
 int main(){
 
-    env_mountain_car_cont* pEnv = new env_mountain_car_cont();
+    agentDQL* pAgent = new agentDQL({4,50,50,2},0.001,0.95,1.0);
+    
+    int episodes = 1000;
 
-    pEnv->reset();
-    pEnv->render(100);
+    int option = 0;
 
-    Eigen::RowVectorXf state(2);
-    float reward = 0.0;
-    bool done = false;
+    do {
+        std::cout << " Menu : " << std::endl
+                  << "  1. Train " << std::endl
+                  << "  2. Test  " << std::endl
+                  << "  3. Save  " << std::endl
+                  << "  4. Load  " << std::endl
+                  << " .9. Exit  " << std::endl
+                  << " " << std::endl
+                  << " Opt: ";
+        std::cin >> option;
 
-    for (unsigned int i=0; i<1000; i++){
-        pEnv->step(1.0,state,reward,done);
-        pEnv->render(100);
-        std::cout << state << std::endl;
-    }
+        if (option==1){
+            std::cout << "Episodes = "; std::cin >> episodes;
+            pAgent->debug_mode(false);
+            pAgent->train(episodes,500,100,20);
+        }
+        else if (option==2){
+            pAgent->test(500,5,true);
+        }
+        else if (option==3){
+            pAgent->save_model();
+        }
+        else if (option==4){
+            pAgent->load_model();
+        }
+    } while (option != 9);
+
 
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
