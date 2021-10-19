@@ -76,17 +76,6 @@ Eigen::RowVectorXf* NNLayer::forward(Eigen::RowVectorXf& input){
 }
 
 
-
-float f_identity(float x){ return x; }
-float f_identity_d(float x){ return 1; }
-
-float f_relu(float x){ if (x>0) return x; else return 0; }
-float f_relu_d(float x){ if (x>0) return 1; else return 0; }
-
-float f_sigmoid(float x){ return 1 / (1 + exp(-x)); }
-float f_sigmoid_d(float x){ float sigmoid = 1 / (1 + exp(-x)); return sigmoid*(1-sigmoid); }
-
-
 /*
 void NNLayer::update_weights(Eigen::MatrixXf& gradient){
     (*pWeights) = (*pWeights) - (learning_rate*gradient);
