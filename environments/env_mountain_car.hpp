@@ -74,7 +74,7 @@ class env_mountain_car{
 
         // Action space - Discrete
         std::string actType = "discrete";
-        std::vector<int> action_space = {0,1};
+        std::vector<int> action_space = {0,1,2};
 
         // Render 
         cv::Mat img = cv::Mat(600,800,CV_8UC3, cv::Scalar(255,255,255));

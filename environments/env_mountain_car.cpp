@@ -52,6 +52,7 @@ void env_mountain_car::step(float action, Eigen::RowVectorXf &zstate, float &zre
         done = false;
 
     float reward = -1.0;
+    reward = x - (-0.6);
 
     state.coeffRef(0) = x;
     state.coeffRef(1) = v;

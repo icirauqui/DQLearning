@@ -25,11 +25,11 @@ int main(){
         if (option==1){
             std::cout << "Episodes = "; std::cin >> episodes;
             pAgent->debug_mode(false);
-            pAgent->train(episodes,500,100,20);
+            pAgent->train(episodes,200,100,20);
         }
         else if (option==2){
             std::cout << "Episodes = "; std::cin >> episodes;
-            pAgent->test(500,episodes,true);
+            pAgent->test(200,episodes,true);
         }
         else if (option==3){
             pAgent->save_model();
@@ -41,12 +41,13 @@ int main(){
 
 
 
+
+
     return 0;
 
 
-
-
 }
+
 
 
 

@@ -290,8 +290,10 @@ void agentDQL::experience_replay(int update_size){
         else {
             if (done)
                 experimental_values[action_selected] = -1;
+                //experimental_values[action_selected] = + static_cast <float> (RAND_MAX);
             else
                 experimental_values[action_selected] = 1 + gamma*max_next_action_values;
+                //experimental_values[action_selected] = experimental_values[action_selected] + gamma*reward;
         }
 
         pNN1->backward(action_values, experimental_values);
