@@ -56,7 +56,6 @@ class env_mountain_car{
 
         bool bDebug = false;
         std::string envId = "MountainCar";
-        std::string actType = "discrete";
 
         float position_min = -1.2;
         float position_max = 0.6;
@@ -68,9 +67,14 @@ class env_mountain_car{
         float gravity = 0.0025;
 
 
+        // State
         float x = 0.0; // position
         float v = 0.0; // speed
         Eigen::RowVectorXf state = Eigen::RowVectorXf(2);
+
+        // Action space - Discrete
+        std::string actType = "discrete";
+        std::vector<int> action_space = {0,1};
 
         // Render 
         cv::Mat img = cv::Mat(600,800,CV_8UC3, cv::Scalar(255,255,255));
@@ -83,6 +87,7 @@ class env_mountain_car{
         void debug_mode(bool dbg);
         std::string get_env_id();
         std::string get_env_actType();
+        std::vector<int> get_env_dims();
 
         void step(float action, Eigen::RowVectorXf &zstate, float &zreward, bool &zdone);
 

@@ -14,12 +14,14 @@ class NN{
     private:
 
         std::vector<int> topology;
+        std::vector<std::string> act_funcs;
+        
         float learningRate;
 
         bool bDebug = false;
 
     public:
-        NN(std::vector<int> topology, float learningRate = float(0.005), bool bDebug = false);
+        NN(std::vector<int> topology, std::vector<std::string> act_funcs1, float learningRate = float(0.005), bool bDebug = false);
         ~NN();
         void debug_mode(bool bdbg = false);
 

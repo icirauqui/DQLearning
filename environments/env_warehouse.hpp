@@ -18,17 +18,20 @@ class env_warehouse{
     private:
         bool bDebug = false;
         std::string envId = "Warehouse";
-        std::string actType = "discrete";
-
-        int row, col;
         
         // Create a 2D array to hold the rewards for each state
         // The array is 11x11, matching the shape of the environment
         std::vector<std::vector<int> > rewards;
 
-    
-
         std::vector<int> env_dims;
+
+        // State
+        int row, col;
+        Eigen::RowVectorXf state = Eigen::RowVectorXf(2);
+
+        // Discrete
+        std::string actType = "discrete";
+        std::vector<int> action_space = {0,1, 2, 3};
 
         // Number of steps taken in current path
         int path_steps;
@@ -41,10 +44,9 @@ class env_warehouse{
         void debug_mode(bool dbg);
         std::string get_env_id();
         std::string get_env_actType();
+        std::vector<int> get_env_dims();
 
         RowVector* reset();
-
-        std::vector<int> get_env_dims();
 
         int get_reward(int row, int col);
 

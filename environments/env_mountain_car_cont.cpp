@@ -19,6 +19,13 @@ std::string env_mountain_car_cont::get_env_actType(){
     return actType;
 }
 
+std::vector<int> env_mountain_car_cont::get_env_dims(){
+    std::vector<int> env_dims;
+    env_dims.push_back(state.size());
+    env_dims.push_back(action_space.size());
+    return env_dims;
+}
+
 
 void env_mountain_car_cont::step(float action, Eigen::RowVectorXf &zstate, float &zreward, bool &zdone){
     x = state.coeffRef(0);

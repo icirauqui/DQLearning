@@ -51,7 +51,6 @@ class env_mountain_car_cont{
 
         bool bDebug = false;
         std::string envId = "MountainCarCont";
-        std::string actType = "continuous";
 
         float action_min = -1.0;
         float action_max = 1.0;
@@ -63,10 +62,14 @@ class env_mountain_car_cont{
         float power = 0.0015;
         float velocity_goal = 0.0;
 
-
+        // State
         float x = 0.0; // position
         float v = 0.0; // speed
         Eigen::RowVectorXf state = Eigen::RowVectorXf(2);
+
+        // Action space - Continuous
+        std::string actType = "continuous";
+        std::vector<int> action_space = {1};
 
         // Render 
         cv::Mat img = cv::Mat(600,800,CV_8UC3, cv::Scalar(255,255,255));
@@ -79,6 +82,7 @@ class env_mountain_car_cont{
         void debug_mode(bool dbg);
         std::string get_env_id();
         std::string get_env_actType();
+        std::vector<int> get_env_dims();
 
         void step(float action, Eigen::RowVectorXf &zstate, float &zreward, bool &zdone);
 

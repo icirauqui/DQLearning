@@ -45,7 +45,12 @@ std::string env_warehouse::get_env_actType(){
     return actType;
 }
 
-
+std::vector<int> env_warehouse::get_env_dims(){
+    std::vector<int> env_dims;
+    env_dims.push_back(state.size());
+    env_dims.push_back(action_space.size());
+    return env_dims;
+}
 
 
 RowVector* env_warehouse::reset(){
@@ -72,11 +77,6 @@ RowVector* env_warehouse::reset(){
     return obs;
 }
 
-
-
-std::vector<int> env_warehouse::get_env_dims(){
-    return env_dims;
-}
 
 
 int env_warehouse::get_reward(int row, int col){

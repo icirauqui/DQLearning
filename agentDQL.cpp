@@ -2,21 +2,45 @@
 
 
 
-agentDQL::agentDQL(std::vector<int> topology1, float learningRate, float gamma, float epsilon){
+agentDQL::agentDQL(std::vector<int> topology1, std::vector<std::string> act_funcs1, float learningRate, float gamma, float epsilon){
     this->learning_rate = learning_rate;
     this->gamma = gamma;
     this->epsilon = epsilon;
     this->epsilon1 = epsilon;
-    this->topology = topology1;
 
+    //pEnv = new env_warehouse();
     pEnv = new env_cart_pole();
+    //pEnv = new env_mountain_car();
+    //pEnv = new env_mountain_car_cont();
+
+
+
     pMemory = new memory_buffer();
 
-    pNN1 = new NN(topology,learningRate,false);
-    pNN2 = new NN(topology,learningRate,false);
+    std::vector<int> env_dims;
+    env_dims = pEnv->get_env_dims();
+
+    this->topology.push_back(env_dims[0]);
+    for (int i=0; i<topology1.size(); i++)
+        this->topology.push_back(topology1[i]);   
+    this->topology.push_back(env_dims[1]);
+
+    //this->topology = topology1;
+
+    for (int i=0; i<act_funcs1.size(); i++)
+        this->act_funcs.push_back(act_funcs1[i]);
+    this->act_funcs.push_back("none");
+
+    pNN1 = new NN(topology,act_funcs,learningRate,false);
+    pNN2 = new NN(topology,act_funcs,learningRate,false);
 
     for (int i=0; i<pNN1->model.size(); i++)
         pNN2->model[i]->set_weights(pNN1->model[i]->get_weights());
+
+    if (pEnv->get_env_actType() == "discrete") 
+        envType = 1;
+    else
+        envType = 2;
 
     // Ready randon number generator
     srand(time(0));

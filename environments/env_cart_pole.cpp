@@ -21,6 +21,12 @@ std::string env_cart_pole::get_env_actType(){
     return actType;
 }
 
+std::vector<int> env_cart_pole::get_env_dims(){
+    std::vector<int> env_dims;
+    env_dims.push_back(state.size());
+    env_dims.push_back(action_space.size());
+    return env_dims;
+}
 
 void env_cart_pole::step(int action, Eigen::RowVectorXf &zstate, float &zreward, bool &zdone){
     float force;

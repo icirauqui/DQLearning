@@ -25,6 +25,7 @@ class agentDQL{
         int row, row1, col, col1;
 
         std::vector<int> topology;
+        std::vector<std::string> act_funcs;
 
         float learning_rate = 0.9;
         float gamma = 0.9;
@@ -37,7 +38,12 @@ class agentDQL{
         bool bDebug;
 
         // Environment
+        //env_warehouse* pEnv;
         env_cart_pole* pEnv;
+        //env_mountain_car* pEnv;
+        //env_mountain_car_cont* pEnv;
+        int envType = 1;    // 1 = Discrete, 2 = Continuous
+
         // Main NN
         NN *pNN1;
         // Target NN
@@ -48,7 +54,7 @@ class agentDQL{
     public:
 
 
-        agentDQL(std::vector<int> topology1, float learningRate, float gamma, float epsilon);
+        agentDQL(std::vector<int> topology1, std::vector<std::string> act_funcs1, float learningRate, float gamma, float epsilon);
 
         ~agentDQL();
 

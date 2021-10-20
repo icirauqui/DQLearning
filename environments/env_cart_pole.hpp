@@ -62,7 +62,6 @@ class env_cart_pole{
 
         bool bDebug = false;
         std::string envId = "CartPole";
-        std::string actType = "discrete";
 
         float gravity = 9.8;
         float mass_cart = 1.0;
@@ -80,12 +79,15 @@ class env_cart_pole{
         std::vector<float> high = {2*x_threshold, static_cast <float> (RAND_MAX), theta_threshold_radians, static_cast <float> (RAND_MAX)};
         std::vector<float> low = {-2*x_threshold, -1*static_cast <float> (RAND_MAX), -theta_threshold_radians, -1*static_cast <float> (RAND_MAX)};
 
+        // State
         float x = 0.0; // position
         float xdot = 0.0; // speed
         float theta = 0.0; // angle
         float thetadot = 0.0; // angular velocity
         Eigen::RowVectorXf state = Eigen::RowVectorXf(4);
 
+        // Action space - Discrete
+        std::string actType = "discrete";
         std::vector<int> action_space = {0,1};
 
         int steps_beyond_done = -1;
@@ -109,6 +111,7 @@ class env_cart_pole{
         void debug_mode(bool dbg);
         std::string get_env_id();
         std::string get_env_actType();
+        std::vector<int> get_env_dims();
 
         void step(int action, Eigen::RowVectorXf &zstate, float &zreward, bool &zdone);
 

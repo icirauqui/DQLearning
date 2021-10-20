@@ -4,7 +4,8 @@
 
 int main(){
 
-    agentDQL* pAgent = new agentDQL({4,50,50,2},0.001,0.95,1.0);
+    //agentDQL* pAgent = new agentDQL({4,50,50,2},0.001,0.95,1.0);
+    agentDQL* pAgent = new agentDQL({50,50},{"relu","relu"},0.001,0.95,1.0);
     
     int episodes = 1000;
 
@@ -39,6 +40,10 @@ int main(){
 
 
     return 0;
+
+
+
+
 }
 
 
