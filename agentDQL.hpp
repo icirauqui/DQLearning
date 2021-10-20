@@ -38,10 +38,10 @@ class agentDQL{
         bool bDebug;
 
         // Environment
-        //env_warehouse* pEnv;
-        env_cart_pole* pEnv;
-        //env_mountain_car* pEnv;
-        //env_mountain_car_cont* pEnv;
+        //env_warehouse* pEnv = new env_warehouse();
+        env_cart_pole* pEnv = new env_cart_pole();
+        //env_mountain_car* pEnv = new env_mountain_car();
+        //env_mountain_car_cont* pEnv = new env_mountain_car_cont();
         int envType = 1;    // 1 = Discrete, 2 = Continuous
 
         // Main NN

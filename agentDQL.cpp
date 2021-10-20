@@ -9,7 +9,7 @@ agentDQL::agentDQL(std::vector<int> topology1, std::vector<std::string> act_func
     this->epsilon1 = epsilon;
 
     //pEnv = new env_warehouse();
-    pEnv = new env_cart_pole();
+    //pEnv = new env_cart_pole();
     //pEnv = new env_mountain_car();
     //pEnv = new env_mountain_car_cont();
 
