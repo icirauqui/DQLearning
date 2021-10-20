@@ -12,15 +12,6 @@ NN::NN(std::vector<int> topology, std::vector<std::string> act_funcs1, float lea
     for (unsigned int i=0; i<topology.size()-1; i++)
         model.push_back(new NNLayer(topology[i]+1,topology[i+1],act_funcs[i],learningRate));
 
-    for (int i=0; i<topology.size(); i++)
-        std::cout << topology[i] << " ";
-    std::cout << std::endl;
-    
-    for (int i=0; i<act_funcs.size(); i++)
-        std::cout << act_funcs[i] << " ";
-    std::cout << std::endl;
-    
-
 /*
     for (unsigned int i=0; i<topology.size()-1; i++){
         if (i<topology.size()-2)

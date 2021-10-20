@@ -13,8 +13,9 @@ class memory_buffer{
 
         std::vector<Eigen::RowVectorXf*> vObservation;
         std::vector<Eigen::RowVectorXf*> vObservation1;
-        std::vector<int> vAction;
+        std::vector<float> vAction;
         std::vector<bool> vDone;
+        std::vector<float> vReward;
 
 
     public:
@@ -23,15 +24,16 @@ class memory_buffer{
 
         ~memory_buffer();
 
-        void add(Eigen::RowVectorXf& obs, Eigen::RowVectorXf& obs1, int act, bool bdone);
+        void add(Eigen::RowVectorXf& obs, Eigen::RowVectorXf& obs1, float act, bool bdone, float reward);
 
         int size();
 
         
         Eigen::RowVectorXf* sample_observation(int idx);
         Eigen::RowVectorXf* sample_observation1(int idx);
-        int sample_action(int idx);
+        float sample_action(int idx);
         bool sample_done(int idx);
+        float sample_reward(int idx);
 
         void display_memory(int idx);
 

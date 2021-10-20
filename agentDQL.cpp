@@ -5,8 +5,9 @@
 agentDQL::agentDQL(std::vector<int> topology1, std::vector<std::string> act_funcs1, float learningRate, float gamma, float epsilon){
     this->learning_rate = learning_rate;
     this->gamma = gamma;
-    this->epsilon = epsilon;
-    this->epsilon1 = epsilon;
+    //this->epsilon = epsilon;
+    //this->epsilon1 = epsilon;
+    this->eps_decay = epsilon;
 
     //pEnv = new env_warehouse();
     //pEnv = new env_cart_pole();
@@ -29,7 +30,8 @@ agentDQL::agentDQL(std::vector<int> topology1, std::vector<std::string> act_func
 
     for (int i=0; i<act_funcs1.size(); i++)
         this->act_funcs.push_back(act_funcs1[i]);
-    this->act_funcs.push_back("none");
+    if (act_funcs1.size() == topology1.size())
+        this->act_funcs.push_back("none");
 
     pNN1 = new NN(topology,act_funcs,learningRate,false);
     pNN2 = new NN(topology,act_funcs,learningRate,false);
@@ -92,7 +94,7 @@ void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_up
                 pEnv->render();
 
             // Select action with main NN, performs a forward that returns Q(s,a;th)
-            int action = this->select_epsilon_greedy_action(*observation,true);
+            float action = this->select_epsilon_greedy_action(*observation,true);
 
             *observation1 = *observation;
 
@@ -100,13 +102,15 @@ void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_up
             pEnv->step(action, *observation, reward, done);
 
             // Store the occurence for future learning
-            pMemory->add(*observation, *observation1, action, done);
+            pMemory->add(*observation, *observation1, action, done, reward);
 
             // Add to total episode reward
             ep_reward += reward;
             
             if(pMemory->size() > exp_upd)
                 this->experience_replay(exp_upd);
+
+            //std::cout << "action = " << action << std::endl;
 
             // Learn from past outcomes every n steps
             //if (cnt_exp_upd == exp_upd){
@@ -123,13 +127,10 @@ void agentDQL::train(int num_episodes, int max_steps, int target_upd, int exp_up
             //        pNN2->model[i]->set_weights(pNN1->model[i]->get_weights());
             //    cnt_target_upd = 0;
             //}
-            
+
 
             // End episode if we have reached a terminal state
-            if (done){
-                //this->experience_replay(pMemory->size());
-                //pMemory->clear_memory();
-
+            if (done || (step == max_steps-1)){
                 if (bDebug)
                     pEnv->render();
                 std::cout << "Episode " << episode + 1 << " (" << 100*episode/num_episodes << "%) has ended after " << step + 1 << " with reward " << ep_reward << "/" << max_ep_reward << " " << epsilon << std::endl;
@@ -169,7 +170,7 @@ void agentDQL::test(int max_steps, int num_episodes, bool verbose){
             if (verbose)
                 pEnv->render();
 
-            int action = this->select_epsilon_greedy_action(*observation, false);
+            float action = this->select_epsilon_greedy_action(*observation, false);
 
             pEnv->step(action, *observation, reward, done);
 
@@ -189,22 +190,38 @@ void agentDQL::test(int max_steps, int num_episodes, bool verbose){
 
 
 
-int agentDQL::select_epsilon_greedy_action(RowVector& obs, bool bTrain){
+float agentDQL::select_epsilon_greedy_action(RowVector& obs, bool bTrain){
     // Calculate next action, either randomly, or with Main NN
     float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
     if (bTrain && r<epsilon){
-        return floor(r*(topology.back()-0.01));
+        float act = 0;
+
+        if (pEnv->get_env_actType() == "discrete"){
+            act = floor(r*(topology.back()-0.01));
+        }
+        else{
+            float LO = -1.0;
+            float HI = +1.0;
+            act = LO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(HI-LO)));
+        }
+        return act;
     }
     else {
         RowVector output;
         pNN1->forward(obs,output);
-        float max_q = - static_cast <float> (RAND_MAX);
-        int act = 0;
-        for (int i=0; i<output.size(); i++){
-            if (output[i]>max_q){
-                max_q = output[i];
-                act = i;
+        float act = 0;
+
+        if (pEnv->get_env_actType() == "discrete"){
+            float max_q = - static_cast <float> (RAND_MAX);
+            for (int i=0; i<output.size(); i++){
+                if (output[i]>max_q){
+                    max_q = output[i];
+                    act = i;
+                }
             }
+        }
+        else{
+            act = output.coeffRef(0);
         }
         return act;
     }
@@ -249,8 +266,9 @@ void agentDQL::experience_replay(int update_size){
 
         RowVector* new_obs = pMemory->sample_observation(idx);
         RowVector* prev_obs = pMemory->sample_observation1(idx);
-        int action_selected = pMemory->sample_action(idx);
+        float action_selected = pMemory->sample_action(idx);
         bool done = pMemory->sample_done(idx);
+        float reward = pMemory->sample_reward(idx);
 
         RowVector action_values(topology.back()), next_action_values(topology.back()), experimental_values(topology.back());
         pNN1->forward(*prev_obs,action_values);
@@ -263,10 +281,18 @@ void agentDQL::experience_replay(int update_size){
                 max_next_action_values = next_action_values(i);
         }
 
-        if (done)
-            experimental_values[action_selected] = -1;
-        else
-            experimental_values[action_selected] = 1 + gamma*max_next_action_values;
+        if (pEnv->get_env_actType() == "continuous"){
+            if (done)
+                experimental_values.coeffRef(0) = reward;
+            else
+                experimental_values.coeffRef(0) = 1 + gamma*reward;
+        }
+        else {
+            if (done)
+                experimental_values[action_selected] = -1;
+            else
+                experimental_values[action_selected] = 1 + gamma*max_next_action_values;
+        }
 
         pNN1->backward(action_values, experimental_values);
     }

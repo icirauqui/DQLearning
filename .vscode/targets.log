@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Tue Oct 19 18:48:59 2021
+# Make data base, printed on Wed Oct 20 19:32:46 2021
 
 # Variables
 
@@ -26,8 +26,6 @@ DESKTOP_SESSION = ubuntu
 XDG_SESSION_CLASS = user
 # makefile (from 'Makefile', line 3)
 SRC = main.cpp
-# environment
-SNAP_COMMON = /var/snap/code/common
 # environment
 XDG_SESSION_TYPE = x11
 # environment
@@ -49,27 +47,25 @@ CURDIR := /home/icirauqui/w0rkspace/DQLearning
 # makefile
 SHELL = /bin/sh
 # environment
-SNAP_DATA = /var/snap/code/77
-# environment
 VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupport":true}
 # environment
-JOURNAL_STREAM = 8:48099
+_ = /usr/share/code/code
+# environment
+JOURNAL_STREAM = 8:75209
 # environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
-# environment
-SNAP_INSTANCE_NAME = code
-# environment
-SNAP_ARCH = amd64
 # makefile (from 'Makefile', line 1)
 MAKEFILE_LIST :=  Makefile
 # automatic
 @F = $(notdir $@)
 # environment
-GIO_LAUNCHED_DESKTOP_FILE = /var/lib/snapd/desktop/applications/code_code.desktop
+GIO_LAUNCHED_DESKTOP_FILE = /usr/share/applications/code.desktop
 # environment
 USERNAME = icirauqui
 # environment
 MAKELEVEL := 0
+# environment
+MANDATORY_PATH = /usr/share/gconf/ubuntu.mandatory.path
 # environment
 XDG_DATA_DIRS = /usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop
 # environment
@@ -79,11 +75,9 @@ DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-_ = /snap/code/77/usr/share/code/code
+ROS_PACKAGE_PATH = /opt/ros/noetic/share:/home/icirauqui/workspace/ORB_SLAM2/Examples/ROS/:/home/icirauqui/workspace/ORB_SLAM2_E/Examples/ROS/:/home/icirauqui/workspace/BagFrom/Images
 # environment
-ROS_PACKAGE_PATH = /opt/ros/noetic/share
-# environment
-MANAGERPID = 1532
+MANAGERPID = 1756
 # environment
 ROS_PYTHON_VERSION = 3
 # environment
@@ -92,42 +86,32 @@ LESSOPEN = | /usr/bin/lesspipe %s
 LC_NAME = es_ES.UTF-8
 # environment
 VSCODE_CWD = /home/icirauqui
-# environment
-GSETTINGS_SCHEMA_DIR = /snap/code/77/usr/share/glib-2.0/schemas
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
-PATH = /opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+PATH = /home/icirauqui/.local/bin:/opt/ros/noetic/bin:/home/icirauqui/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # environment
 XDG_SESSION_DESKTOP = ubuntu
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/XPS15:@/tmp/.ICE-unix/1791,unix/XPS15:/tmp/.ICE-unix/1791
+GJS_DEBUG_OUTPUT = stderr
+# environment
+SESSION_MANAGER = local/icirauqui-Precision-7550:@/tmp/.ICE-unix/3572,unix/icirauqui-Precision-7550:/tmp/.ICE-unix/3572
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
-# environment
-GDK_PIXBUF_MODULE_FILE = /home/icirauqui/snap/code/common/.cache/gdk-pixbuf-loaders.cache
 # makefile (from 'Makefile', line 2)
 PROJECT = main
 # environment
-SNAP = /snap/code/77
-# environment
 ROS_ROOT = /opt/ros/noetic/share/ros
-# environment
-SNAP_VERSION = c13f1abb
 # environment
 XDG_MENU_PREFIX = gnome-
 # environment
 VSCODE_LOG_STACK = false
 # environment
-DISABLE_WAYLAND = 1
+VSCODE_CRASH_REPORTER_START_OPTIONS = {"companyName":"Microsoft","productName":"VSCode","submitURL":"appcenter://code?aid=fba07a4d-84bd-4fc8-a125-9640fc8ce171&uid=7a49b794-3cef-4569-95e9-f3f0202cb6aa&iid=7a49b794-3cef-4569-95e9-f3f0202cb6aa&sid=7a49b794-3cef-4569-95e9-f3f0202cb6aa","uploadToServer":true}
 # environment
-VSCODE_CRASH_REPORTER_START_OPTIONS = {"companyName":"Microsoft","productName":"VSCode","submitURL":"appcenter://code?aid=fba07a4d-84bd-4fc8-a125-9640fc8ce171&uid=7f79b37b-5392-4554-8b2f-769116d20623&iid=7f79b37b-5392-4554-8b2f-769116d20623&sid=7f79b37b-5392-4554-8b2f-769116d20623","uploadToServer":true}
-# environment
-INVOCATION_ID = 2636a6a0623041d78f57bfe0c87af560
-# environment
-GDK_PIXBUF_MODULEDIR = /snap/code/77/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
+INVOCATION_ID = 4e77fd3321454f03a42eb2d47cf5a0ac
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -139,21 +123,19 @@ ROS_DISTRO = noetic
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 2457
+GIO_LAUNCHED_DESKTOP_FILE_PID = 4659
 # automatic
 %F = $(notdir $%)
 # environment
-DISPLAY = :1
+DISPLAY = :0
 # environment
 VSCODE_PIPE_LOGGING = true
-# environment
-SNAP_INSTANCE_KEY = 
 # environment
 PWD = /home/icirauqui/w0rkspace/DQLearning
 # default
 .LOADED := 
 # environment
-SSH_AGENT_PID = 1757
+SSH_AGENT_PID = 1954
 # environment
 PKG_CONFIG_PATH = /opt/ros/noetic/lib/pkgconfig
 # environment
@@ -169,23 +151,13 @@ LD_LIBRARY_PATH = /opt/ros/noetic/lib
 # environment
 LESSCLOSE = /usr/bin/lesspipe %s %s
 # environment
-VSCODE_CLI = 1
-# environment
-VSCODE_CODE_CACHE_PATH = /home/icirauqui/.config/Code/CachedData/c13f1abb110fc756f9b3a6f16670df9cd9d4cf63
+VSCODE_CODE_CACHE_PATH = /home/icirauqui/.config/Code/CachedData/3866c3553be8b268c8a7f8c0482c0c0177aa8bfa
 # environment
 LOGNAME = icirauqui
 # environment
 APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
-# environment
-SNAP_LIBRARY_PATH = /var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void
-# environment
-SNAP_CONTEXT = fnyeMu7vLbjXrJk-9qfACX6rgr_MXSwsVP9h-d-3QsAdr3UPH9uj
 # automatic
 +F = $(notdir $+)
-# environment
-ELECTRON_NO_ATTACH_CONSOLE = 1
-# environment
-SNAP_USER_COMMON = /home/icirauqui/snap/code/common
 # environment
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # environment
@@ -194,8 +166,6 @@ GNOME_DESKTOP_SESSION_ID = this-is-deprecated
 ^D = $(patsubst %/,%,$(dir $^))
 # environment
 LC_TIME = es_ES.UTF-8
-# environment
-SNAP_REAL_HOME = /home/icirauqui
 # default
 MAKE = $(MAKE_COMMAND)
 # default
@@ -203,21 +173,17 @@ MAKECMDGOALS := all
 # environment
 QT_IM_MODULE = ibus
 # environment
-SNAP_USER_DATA = /home/icirauqui/snap/code/77
-# environment
 SHLVL = 0
 # makefile (from 'Makefile', line 1)
 CC = g++
 # environment
 GNOME_SHELL_SESSION_MODE = ubuntu
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-daaa8ddb-6df7-4b0a-87a4-4027dcf4bc08.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-b9bf10d0-4a63-491e-b77c-91e2fff39a1a.sock
 # default
 MAKE_VERSION := 4.2.1
 # environment
 USER = icirauqui
-# environment
-SNAP_REVISION = 77
 # environment
 LC_MONETARY = es_ES.UTF-8
 # makefile
@@ -237,9 +203,7 @@ MAKE_COMMAND := make
 # automatic
 *F = $(notdir $*)
 # environment
-VSCODE_IPC_HOOK = /run/user/1000/vscode-337bfe8b-1.61.1-main.sock
-# environment
-BAMF_DESKTOP_FILE_HINT = /var/lib/snapd/desktop/applications/code_code.desktop
+VSCODE_IPC_HOOK = /run/user/1000/vscode-337bfe8b-1.59.1-main.sock
 # environment
 PYTHONPATH = /opt/ros/noetic/lib/python3/dist-packages
 # makefile
@@ -259,15 +223,15 @@ GDK_BACKEND = x11
 # environment
 LC_PAPER = es_ES.UTF-8
 # environment
-LC_IDENTIFICATION = es_ES.UTF-8
-# environment
 QT_ACCESSIBILITY = 1
+# environment
+DEFAULTS_PATH = /usr/share/gconf/ubuntu.default.path
 # default
 MAKEFILES := 
 # environment
-SNAP_COOKIE = fnyeMu7vLbjXrJk-9qfACX6rgr_MXSwsVP9h-d-3QsAdr3UPH9uj
-# environment
 LC_NUMERIC = es_ES.UTF-8
+# environment
+VSCODE_BROWSER_CODE_LOADING = bypassHeatCheck
 # automatic
 <F = $(notdir $<)
 # environment
@@ -277,8 +241,6 @@ LC_MEASUREMENT = es_ES.UTF-8
 # environment
 ROS_MASTER_URI = http://localhost:11311
 # environment
-SNAP_NAME = code
-# environment
 LC_ALL = C
 # environment
 GJS_DEBUG_TOPICS = JS ERROR;JS LOG
@@ -286,11 +248,8 @@ GJS_DEBUG_TOPICS = JS ERROR;JS LOG
 LIBS = `pkg-config --cflags --libs opencv4`
 # automatic
 ^F = $(notdir $^)
- 
 # default
 SUFFIXES := 
-# environment
-SNAP_REEXEC = 
 # environment
 CHROME_DESKTOP = code-url-handler.desktop
 # environment
@@ -298,17 +257,19 @@ WINDOWPATH = 2
 # default
 .INCLUDE_DIRS = /usr/include /usr/local/include /usr/include
 # environment
-GJS_DEBUG_OUTPUT = stderr
+LC_IDENTIFICATION = es_ES.UTF-8
 # default
 .RECIPEPREFIX := 
+# environment
+IM_CONFIG_CHECK_ENV = 1
 # environment
 LC_ADDRESS = es_ES.UTF-8
 # environment
 LANG = C
 # environment
-VSCODE_PID = 2502
+VSCODE_PID = 4659
 # variable set hash-table stats:
-# Load=147/1024=14%, Rehash=0, Collisions=25/174=14%
+# Load=128/1024=12%, Rehash=0, Collisions=20/155=13%
 
 # Pattern-specific Variable Values
 
@@ -316,9 +277,9 @@ VSCODE_PID = 2502
 
 # Directories
 
-# . (device 66311, inode 11276095): 22 files, no impossibilities.
+# . (device 66312, inode 17956914): 21 files, no impossibilities.
 
-# 22 files, no impossibilities in 1 directories.
+# 21 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -336,7 +297,8 @@ all:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2021-10-19 13:23:58.935590083
+ 
+#  Last modified 2021-10-14 19:49:59.735832492
 #  File has been updated.
 #  Successfully updated.
 
@@ -367,12 +329,12 @@ main: main.cpp
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 27 / storage = 271 B / avg = 10 B
-# current buf: size = 8162 B / used = 271 B / count = 27 / avg = 10 B
+# strcache buffers: 1 (0) / strings = 26 / storage = 252 B / avg = 9 B
+# current buf: size = 8162 B / used = 252 B / count = 26 / avg = 9 B
 
-# strcache performance: lookups = 34 / hit rate = 20%
+# strcache performance: lookups = 33 / hit rate = 21%
 # hash-table stats:
-# Load=27/8192=0%, Rehash=0, Collisions=1/34=3%
-# Finished Make data base on Tue Oct 19 18:48:59 2021
+# Load=26/8192=0%, Rehash=0, Collisions=1/33=3%
+# Finished Make data base on Wed Oct 20 19:32:46 2021
 
  

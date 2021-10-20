@@ -5,7 +5,7 @@
 int main(){
 
     //agentDQL* pAgent = new agentDQL({4,50,50,2},0.001,0.95,1.0);
-    agentDQL* pAgent = new agentDQL({50,50},{"relu","relu"},0.001,0.95,1.0);
+    agentDQL* pAgent = new agentDQL({40,40},{"relu","relu"},0.001,0.95,0.997);
     
     int episodes = 1000;
 
@@ -28,7 +28,8 @@ int main(){
             pAgent->train(episodes,500,100,20);
         }
         else if (option==2){
-            pAgent->test(500,5,true);
+            std::cout << "Episodes = "; std::cin >> episodes;
+            pAgent->test(500,episodes,true);
         }
         else if (option==3){
             pAgent->save_model();
@@ -39,7 +40,9 @@ int main(){
     } while (option != 9);
 
 
+
     return 0;
+
 
 
 

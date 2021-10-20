@@ -29,7 +29,7 @@ class agentDQL{
 
         float learning_rate = 0.9;
         float gamma = 0.9;
-        float epsilon = 0.9;
+        float epsilon = 1.0;
         float epsilon1 = 0.0;
 
         float eps_min = 0.01;
@@ -68,7 +68,7 @@ class agentDQL{
         void train(int num_episodes, int max_steps, int target_upd, int exp_upd);
         void test(int max_steps, int num_episodes = 1, bool verbose = false);
 
-        int select_epsilon_greedy_action(RowVector& obs, bool bTrain = true);
+        float select_epsilon_greedy_action(RowVector& obs, bool bTrain = true);
 
         void epsilon_decay();
    

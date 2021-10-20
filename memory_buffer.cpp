@@ -6,7 +6,7 @@ memory_buffer::memory_buffer(){};
 memory_buffer::~memory_buffer(){};
 
 
-void memory_buffer::add(Eigen::RowVectorXf& obs, Eigen::RowVectorXf& obs1, int act, bool bdone){
+void memory_buffer::add(Eigen::RowVectorXf& obs, Eigen::RowVectorXf& obs1, float act, bool bdone, float reward){
     // Duplicate the observations with new pointers to the heap, otherwise the original pointer info will be updated, 
     // thus we'd only save the last data.
     Eigen::RowVectorXf* obst = new Eigen::RowVectorXf(obs.size());
@@ -19,6 +19,7 @@ void memory_buffer::add(Eigen::RowVectorXf& obs, Eigen::RowVectorXf& obs1, int a
 
     vAction.push_back(act);
     vDone.push_back(bdone);
+    vReward.push_back(reward);
 }
 
 
@@ -37,7 +38,7 @@ Eigen::RowVectorXf* memory_buffer::sample_observation1(int idx){
 }
 
 
-int memory_buffer::sample_action(int idx){
+float memory_buffer::sample_action(int idx){
     return vAction[idx];
 }
 
@@ -45,6 +46,12 @@ int memory_buffer::sample_action(int idx){
 bool memory_buffer::sample_done(int idx){
     return vDone[idx];
 }
+
+
+float memory_buffer::sample_reward(int idx){
+    return vReward[idx];
+}
+
 
 
 void memory_buffer::display_memory(int idx){

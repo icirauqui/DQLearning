@@ -15,6 +15,9 @@ float f_relu_d(float x){ if (x>0) return 1; else return 0; }
 float f_sigmoid(float x){ return 1 / (1 + exp(-x)); }
 float f_sigmoid_d(float x){ float sigmoid = 1 / (1 + exp(-x)); return sigmoid*(1-sigmoid); }
 
+float f_tanh(float x){ return tanh(x); }
+float f_tanh_d(float x){ return (1 - pow(tanh(x),2)); }
+
 
 
 NNLayer::NNLayer(int input_size, int output_size, std::string activation, float lr, bool bDebug){
@@ -71,6 +74,8 @@ Eigen::RowVectorXf* NNLayer::forward(Eigen::RowVectorXf& input){
         (*pQValues) = pQValues->unaryExpr(std::ptr_fun(f_relu));
     else if (f_act == "sigmoid")
         (*pQValues) = pQValues->unaryExpr(std::ptr_fun(f_sigmoid));
+    else if (f_act == "tanh")
+        (*pQValues) = pQValues->unaryExpr(std::ptr_fun(f_tanh));
 
     return pQValues;
 }
@@ -131,6 +136,8 @@ Eigen::RowVectorXf* NNLayer::backward(Eigen::RowVectorXf& gradient_from_above){
             pQValues_temp = pQValuesU->unaryExpr(std::ptr_fun(f_relu_d));
         else if (f_act == "sigmoid")
             pQValues_temp = pQValuesU->unaryExpr(std::ptr_fun(f_sigmoid_d));
+        else if (f_act == "tanh")
+            pQValues_temp = pQValuesU->unaryExpr(std::ptr_fun(f_tanh_d));
 
         for (unsigned int i=0; i<adjusted_mul.size(); i++)
             adjusted_mul.coeffRef(i) = (pQValues_temp.coeffRef(i)) * gradient_from_above.coeffRef(i);
